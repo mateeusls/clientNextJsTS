@@ -2,8 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
-	login?: string;
-	password?: string;
+	name?: string;
+	first?: string;
+	last?: string;
 	message?: string;
 };
 
@@ -12,10 +13,10 @@ export default function handler(
 	res: NextApiResponse<Data>
 ) {
 	const { method } = req;
-	const { login, password } = req.body;
+	const { first, last } = req.body;
 
 	if (method === "POST") {
-		res.status(200).json({ login, password });
+		res.status(200).json({ name: "John Doe", first, last });
 	} else {
 		res.status(400).json({ message: "Not Found" });
 	}
