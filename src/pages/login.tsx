@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { Eye, EyeSlash } from "phosphor-react";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { CreaPe } from "@/components/CreaPe";
 
 import crealogoImg from "@/assets/crealogo.png";
 import govlogoImg from "@/assets/govlogo.png";
+import { AuthContext } from "@/contexts/AuthContext";
 import Head from "next/head";
 
 type Inputs = {
@@ -25,23 +26,11 @@ export default function Home() {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<Inputs>();
+	const { signIn } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
-	const [showError, setShowError] = useState<Error>();
 
-	const onSubmit: SubmitHandler<Inputs> = async (data, e) => {
-		fetch("http://187.87.138.222:3333/auth", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(data),
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.status) {
-					setShowError(data);
-				} else {
-					localStorage.setItem("accessToken", data.token);
-				}
-			});
+	const handleSignIn = async (data: Inputs) => {
+		await signIn(data);
 	};
 
 	return (
@@ -64,9 +53,7 @@ export default function Home() {
 					</div>
 				</div>
 				<form
-					onSubmit={handleSubmit(onSubmit)}
-					action="/api/hello"
-					method="post"
+					onSubmit={handleSubmit(handleSignIn)}
 					className="w-full md:w-96 px-6"
 				>
 					<div className="flex flex-col gap-3 w-full">
@@ -109,7 +96,7 @@ export default function Home() {
 									</p>
 								)} */}
 								<button
-									className="absolute top-2.5 right-4"
+									className="absolute top-3.5 right-4"
 									onClick={(e) => {
 										e.preventDefault();
 										setShowPassword(!showPassword);
@@ -123,14 +110,14 @@ export default function Home() {
 								</button>
 							</label>
 						</div>
-						{showError?.message && (
+						{/* {showError?.message && (
 							<p role="alert" className="text-red-500 text-center mt-1">
 								{showError.message}
 							</p>
 						)}
 						{!showError?.message && (
 							<p role="alert" className="text-red-500 text-center mt-1"></p>
-						)}
+						)} */}
 					</div>
 					<button
 						type="submit"
