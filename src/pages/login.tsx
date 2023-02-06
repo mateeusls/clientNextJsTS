@@ -96,6 +96,7 @@ export default function Home() {
 									</p>
 								)} */}
 								<button
+									type="button"
 									className="absolute top-3.5 right-4"
 									onClick={(e) => {
 										e.preventDefault();

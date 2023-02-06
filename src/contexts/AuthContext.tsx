@@ -70,6 +70,8 @@ export function AuthProvider({ children }) {
 
 		setUser(user);
 
+		api.defaults.headers["Authorization"] = `Bearer ${token}`;
+
 		Router.push("/private");
 	}
 
