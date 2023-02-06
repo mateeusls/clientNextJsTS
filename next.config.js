@@ -1,18 +1,16 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
+const withPWA = require("next-pwa")({
+	dest: "public",
+	register: true,
+	skipWaiting: true,
+	runtimeCaching,
+	buildExcludes: [/middleware-manifest.json$/],
+});
 
-const settings = {
-	env: {},
-	devIndicators: {
-		autoPrerender: false,
-	},
-	pwa: {
-		dest: "public",
-	},
+const nextConfig = withPWA({
 	images: {
 		domains: ["github.com"],
 	},
-};
-
-module.exports =
-	process.env.NODE_ENV === "development" ? settings : withPWA(settings);
+});
+module.exports = nextConfig;
