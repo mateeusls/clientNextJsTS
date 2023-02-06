@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { parseCookies, setCookie } from "nookies";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { createContext, useEffect, useState } from "react";
 
 import { api } from "@/services/api";
@@ -21,6 +21,7 @@ type AuthContextType = {
 	isAuthenticated: boolean;
 	user: User;
 	signIn: (data: SignInData) => Promise<void>;
+	signOut: () => void;
 };
 
 type AxiosResponse = {
@@ -38,7 +39,8 @@ export function AuthProvider({ children }) {
 	const isAuthenticated = !!user;
 
 	function signOut() {
-		setUser(null);
+		destroyCookie(undefined, "creapp.token");
+		api.defaults.headers["Authorization"] = undefined;
 		Router.push("/");
 	}
 
@@ -76,7 +78,7 @@ export function AuthProvider({ children }) {
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
+		<AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
 			{children}
 		</AuthContext.Provider>
 	);

@@ -1,5 +1,4 @@
 import { AuthContext } from "@/contexts/AuthContext";
-import { cpfMask } from "@/services/masks";
 import Image from "next/image";
 import {
 	Bell,
@@ -14,9 +13,8 @@ import { useContext, useState } from "react";
 import EscClose from "./EscClose";
 
 export default function Sidebar() {
-	const { user } = useContext(AuthContext);
-	const [showSidebar, setShowSidebar] = useState(true);
-
+	const { user, signOut } = useContext(AuthContext);
+	const [showSidebar, setShowSidebar] = useState(false);
 	return (
 		<>
 			<nav className="flex items-center justify-between flex-wrap bg-blue-800 py-2 px-4">
@@ -56,8 +54,8 @@ export default function Sidebar() {
 
 			<div className="relative">
 				<EscClose
+					onClose={() => setShowSidebar(false)}
 					statusSideBar={showSidebar}
-					onClose={() => setShowSidebar(!showSidebar)}
 				>
 					<div
 						className={` top-0 left-0 w-72 bg-blue-600  p-10 pl-20 text-white fixed h-full z-40 ${
@@ -85,7 +83,7 @@ export default function Sidebar() {
 										<strong>{user?.name}</strong>
 									</p>
 									<p>
-										<strong>{cpfMask(user?.cpf)}</strong>
+										<strong>{user?.cpf}</strong>
 									</p>
 								</div>
 							</div>
@@ -112,9 +110,15 @@ export default function Sidebar() {
 									<Newspaper size={30} color="#ffff" />
 									<a href="#">Certidão de Registro e Quitação</a>
 								</li>
-								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
-									<Power size={30} color="#ffff" />
-									<a href="#">Sair</a>
+								<li className="p-2 hover:bg-blue-700 rounded-md">
+									<button
+										onClick={signOut}
+										type="button"
+										className="flex items-center gap-4 hover:bg-blue-700 rounded-md w-full"
+									>
+										<Power size={30} color="#ffff" />
+										Sair
+									</button>
 								</li>
 							</ul>
 						</div>
