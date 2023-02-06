@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
@@ -8,7 +8,7 @@ export default function Private() {
 	const { user } = useContext(AuthContext);
 	return (
 		<>
-			<Navbar />
+			<Sidebar />
 		</>
 	);
 }

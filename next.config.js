@@ -9,6 +9,9 @@ const settings = {
 	pwa: {
 		dest: "public",
 	},
+	images: {
+		domains: ["github.com"],
+	},
 };
 
 module.exports =
