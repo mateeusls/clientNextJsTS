@@ -9,10 +9,6 @@ export default function Private() {
 	return (
 		<>
 			<Navbar />
-			<div>
-				<h1>Private</h1>
-				<p>{user?.name}</p>
-			</div>
 		</>
 	);
 }

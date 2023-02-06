@@ -8,7 +8,9 @@ import { CreaPe } from "@/components/CreaPe";
 import crealogoImg from "@/assets/crealogo.png";
 import govlogoImg from "@/assets/govlogo.png";
 import { AuthContext } from "@/contexts/AuthContext";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { parseCookies } from "nookies";
 
 type Inputs = {
 	login: string;
@@ -155,3 +157,20 @@ export default function Home() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { ["creapp.token"]: token } = parseCookies(ctx);
+
+	if (token) {
+		return {
+			redirect: {
+				destination: "/private",
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
+};
