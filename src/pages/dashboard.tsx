@@ -1,20 +1,23 @@
 import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
+import { getImage } from "@/lib/getData";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { parseCookies } from "nookies";
-import { useContext } from "react";
 
-export default function Private() {
-	const { user } = useContext(AuthContext);
+export default function Dashboard({ foto }) {
 	return (
 		<>
-			<Sidebar />
+			<Head>
+				<title>Dashboard - CREA APP</title>
+			</Head>
+			<Sidebar img={foto} />
 		</>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token } = parseCookies(ctx);
+	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
 
 	if (!token) {
 		return {
@@ -25,7 +28,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		};
 	}
 
+	const { foto } = await getImage(rnp);
+
 	return {
-		props: {},
+		props: {
+			foto,
+		},
 	};
 };

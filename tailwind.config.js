@@ -1,4 +1,3 @@
-const { fontFamily } = require("tailwindcss/defaultTheme");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.tsx"],
@@ -10,6 +9,9 @@ module.exports = {
 				},
 				gray: {
 					800: "#09090A",
+				},
+				yellow: {
+					500: "#bc960b",
 				},
 			},
 		},

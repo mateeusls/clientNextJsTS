@@ -22,7 +22,7 @@ type Error = {
 	message: string;
 };
 
-export default function Home() {
+export default function Login() {
 	const {
 		register,
 		handleSubmit,
@@ -99,7 +99,7 @@ export default function Home() {
 								)} */}
 								<button
 									type="button"
-									className="absolute top-3.5 right-4"
+									className="absolute top-2.5 right-4"
 									onClick={(e) => {
 										e.preventDefault();
 										setShowPassword(!showPassword);
@@ -164,7 +164,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	if (token) {
 		return {
 			redirect: {
-				destination: "/private",
+				destination: "/dashboard",
 				permanent: false,
 			},
 		};

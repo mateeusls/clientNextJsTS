@@ -9,7 +9,7 @@ type User = {
 	name: string;
 	email: string;
 	cpf: string;
-	rnpa: string;
+	rnp: string;
 };
 
 type SignInData = {
@@ -64,17 +64,20 @@ export function AuthProvider({ children }) {
 			login,
 			password,
 		});
-		const { token, user } = data;
+		const { token, userData } = data;
 
 		setCookie(undefined, "creapp.token", token, {
 			maxAge: 60 * 60 * 1, // 1 hour
 		});
+		setCookie(undefined, "creapp.user", userData.rnp, {
+			maxAge: 60 * 60 * 1, // 1 hour
+		});
 
-		setUser(user);
+		setUser(userData);
 
 		api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
-		Router.push("/private");
+		Router.push("/dashboard");
 	}
 
 	return (

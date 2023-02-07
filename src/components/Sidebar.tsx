@@ -1,5 +1,8 @@
 import { AuthContext } from "@/contexts/AuthContext";
+import { cpfMask } from "@/lib/masks";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
 	Bell,
 	IdentificationCard,
@@ -12,9 +15,11 @@ import {
 import { useContext, useState } from "react";
 import EscClose from "./EscClose";
 
-export default function Sidebar() {
-	const { user, signOut } = useContext(AuthContext);
+export default function Sidebar({ img }) {
+	const router = useRouter();
+	const { signOut, user } = useContext(AuthContext);
 	const [showSidebar, setShowSidebar] = useState(false);
+
 	return (
 		<>
 			<nav className="flex items-center justify-between flex-wrap bg-blue-800 py-2 px-4">
@@ -25,13 +30,15 @@ export default function Sidebar() {
 								className="cursor-pointer outline-none left-3 top-5 z-50"
 								onClick={() => setShowSidebar(!showSidebar)}
 							>
-								<List size={32} color="#ffff" />
+								<List size={38} color="#ffff" />
 							</button>
 						)}
 					</div>
-					<div className="text-center">
-						<p className="text-sm font-extrabold text-white">CREA-PE</p>
-						<p className="text-[4px] text-white w-16">
+					<div>
+						<p className="text-sm md:text-base font-extrabold text-white">
+							CREA-PE
+						</p>
+						<p className="text-[4px] text-white w-16 text-center mx-auto">
 							Conselho Regional de Engenharia e Agronomia de Pernambuco
 						</p>
 					</div>
@@ -44,9 +51,9 @@ export default function Sidebar() {
 							</a>
 						</li>
 						<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
-							<a href="#">
+							<button type="button" onClick={() => router.push("/card")}>
 								<IdentificationCard size={30} color="#ffff" />
-							</a>
+							</button>
 						</li>
 					</ul>
 				</div>
@@ -68,14 +75,14 @@ export default function Sidebar() {
 						>
 							<XCircle size={28} color="#ffff" />
 						</button>
-						<div className="bg-[#bc960b] absolute top-0 left-0 w-full h-32">
+						<div className="bg-yellow-500 absolute top-0 left-0 w-full h-32">
 							<div className="flex items-center mt-9 px-3 gap-2">
 								<Image
-									src="https://github.com/mateeusls.png"
-									width={80}
-									height={100}
+									src={`data:image/png;base64,${img}`}
+									width={30}
+									height={0}
 									alt="Mateus Lopes"
-									className="rounded-full"
+									className="h-auto w-14 rounded-full"
 								/>
 								<div>
 									<p>Olá,</p>
@@ -83,7 +90,7 @@ export default function Sidebar() {
 										<strong>{user?.name}</strong>
 									</p>
 									<p>
-										<strong>{user?.cpf}</strong>
+										<strong>{user?.cpf ? cpfMask(user?.cpf) : ""}</strong>
 									</p>
 								</div>
 							</div>
@@ -92,23 +99,23 @@ export default function Sidebar() {
 							<ul className="">
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<List size={30} color="#ffff" />
-									<a href="#">Início</a>
+									<Link href="/dashboard">Início</Link>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<Bell size={30} color="#ffff" />
-									<a href="#">Notificações</a>
+									<Link href="#">Notificações</Link>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<IdentificationCard size={30} color="#ffff" />
-									<a href="#">Carteira Profissional</a>
+									<Link href="/card">Carteira Profissional</Link>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<MagnifyingGlass size={30} color="#ffff" />
-									<a href="#">Perfil Profissional</a>
+									<Link href="/me">Perfil Profissional</Link>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<Newspaper size={30} color="#ffff" />
-									<a href="#">Certidão de Registro e Quitação</a>
+									<Link href="#">Certidão de Registro e Quitação</Link>
 								</li>
 								<li className="p-2 hover:bg-blue-700 rounded-md">
 									<button
@@ -123,9 +130,6 @@ export default function Sidebar() {
 							</ul>
 						</div>
 					</div>
-					<h3 className="mt-20 text-4xl font-semibold text-black z-50">
-						I am a sidebar
-					</h3>
 				</EscClose>
 			</div>
 		</>

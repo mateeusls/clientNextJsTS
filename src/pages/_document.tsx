@@ -7,6 +7,7 @@ export default function Document() {
 	return (
 		<Html lang="en">
 			<Head>
+				<meta charSet="utf-8" />
 				<link rel="manifest" href="/manifest.json" />
 				<meta name="application-name" content={APP_NAME} />
 				<meta name="apple-mobile-web-app-capable" content="yes" />
