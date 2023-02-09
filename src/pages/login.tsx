@@ -80,7 +80,7 @@ export default function Login() {
 							</label>
 						</div>
 						<div className="relative">
-							<label htmlFor="password">
+							<label htmlFor="password" className="relative">
 								<input
 									type={showPassword ? "text" : "password"}
 									id="password"
@@ -92,24 +92,16 @@ export default function Login() {
 									} px-3 py-2 md:py-3 border rounded-lg w-full`}
 									placeholder="Password"
 								/>
-								{/* {errors.password?.type === "required" && (
-									<p role="alert" className="text-red-500 text-center mt-1">
-										Password is required
-									</p>
-								)} */}
 								<button
 									type="button"
-									className="absolute top-2.5 right-4"
+									className="absolute right- -top-0.5"
 									onClick={(e) => {
 										e.preventDefault();
 										setShowPassword(!showPassword);
 									}}
 								>
-									{showPassword ? (
-										<EyeSlash size={24} color="#7cb1ff" />
-									) : (
-										<Eye size={24} color="#7cb1ff" />
-									)}
+									{showPassword && <EyeSlash size={24} color="#7cb1ff" />}
+									{!showPassword && <Eye size={24} color="#7cb1ff" />}
 								</button>
 							</label>
 						</div>

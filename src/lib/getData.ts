@@ -1,5 +1,6 @@
 import axios from "axios";
 import { format } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
 export async function getCard(rnp: string) {
 	const { data } = await axios({
@@ -13,7 +14,7 @@ export async function getCard(rnp: string) {
 	return {
 		titulos,
 		tipoCarteira: data.tpoCarteira,
-		dataEmissao: format(new Date(data.dtaEms), "dd/MM/yyyy"),
+		dataEmissao: format(new Date(data.dtaEms), "dd/MM/yyyy", { locale: ptBR }),
 		nroReg: data.crtNroRegCrtM,
 	};
 }

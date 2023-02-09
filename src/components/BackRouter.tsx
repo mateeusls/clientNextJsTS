@@ -14,9 +14,9 @@ export function BackRouter({ title }: BackRouterProps) {
 				<button
 					type="button"
 					onClick={() => router.push("/dashboard")}
-					className="absolute top-3 left-10"
+					className="absolute top-3 left-2"
 				>
-					<CaretLeft size={24} color="#ffff" weight="bold" />
+					<CaretLeft size={25} color="#ffff" weight="bold" />
 				</button>
 				<p className="text-2xl text-white font-medium">{title}</p>
 			</div>

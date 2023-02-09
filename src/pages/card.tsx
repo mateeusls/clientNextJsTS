@@ -21,8 +21,6 @@ import { getCard, getImage, getProfissional } from "@/lib/getData";
 export default function Card({ carteira, imagens, profissional }) {
 	const { user } = useContext(AuthContext);
 
-	const urlQrCode = `https://chart.googleapis.com/chart?cht=qr&chl=${`${user?.rnp}`}&chs=70x70&chld=M|0&choe=UTF-8`;
-
 	return (
 		<>
 			<Head>
@@ -36,7 +34,7 @@ export default function Card({ carteira, imagens, profissional }) {
 				</style>
 			</Head>
 			<Sidebar img={imagens.foto} />
-			<BackRouter title="Carteira Profissional" />
+			<BackRouter title="CARTEIRA PROFISSIONAL" />
 			<div className="">
 				<Glide
 					draggable
@@ -48,7 +46,10 @@ export default function Card({ carteira, imagens, profissional }) {
 					className=""
 				>
 					<div className="relative flex items-center justify-center">
-						<div className="relative rotate-90 gap-1 lg:rotate-0 bg-[#CBDFD5] rounded-lg p-4 grid grid-cols-[48px,220px,85px]">
+						<div
+							id="front"
+							className="relative rotate-90 gap-1 lg:rotate-0 bg-[#CBDFD5] rounded-lg p-4 grid grid-cols-[48px,220px,85px]"
+						>
 							<section className="flex flex-col gap-3 items-center z-10">
 								<div>
 									<Image
@@ -157,7 +158,7 @@ export default function Card({ carteira, imagens, profissional }) {
 									height={0}
 									alt=""
 									src={marcadaguanullImg}
-									className="h-[20rem]"
+									className="h-[320px]"
 								/>
 							</div>
 							<p className="text-[7px] w-[317px] absolute leading-[7px] bottom-[2px] left-[50px] text-center">
@@ -170,7 +171,7 @@ export default function Card({ carteira, imagens, profissional }) {
 							</div>
 						</div>
 					</div>
-					<div className="relative flex items-center justify-center">
+					<div id="back" className="relative flex items-center justify-center">
 						<div
 							className="rotate-90 lg:rotate-0 gap-1 bg-[#CBDFD5] rounded-lg p-3 grid grid-cols-[48px,230px,80px]
 							relative "
@@ -302,13 +303,13 @@ export default function Card({ carteira, imagens, profissional }) {
 									className="h-auto w-auto"
 								/>
 							</div>
-							<div className="absolute -top-8 -right-0 rotate-6 ">
+							<div className="absolute -top-0 -right-0 rotate-6 ">
 								<Image
 									width={150}
 									height={0}
 									alt=""
 									src={marcadaguaImg}
-									className="h-[22rem] opacity-50"
+									className="h-[320px] opacity-50"
 								/>
 							</div>
 							<div className="bg-red-600 w-full flex justify-center absolute">

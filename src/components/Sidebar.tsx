@@ -22,40 +22,45 @@ export default function Sidebar({ img }) {
 
 	return (
 		<>
-			<nav className="flex items-center justify-between flex-wrap bg-blue-800 py-2 px-4">
-				<div className="flex items-center gap-2">
-					<div className="flex items-center">
-						{!showSidebar && (
-							<button
-								className="cursor-pointer outline-none left-3 top-5 z-50"
-								onClick={() => setShowSidebar(!showSidebar)}
-							>
-								<List size={38} color="#ffff" />
-							</button>
-						)}
+			<nav className="flex justify-center items-center bg-blue-800 py-2 px-4">
+				<div className="flex items-center justify-between w-full md:w-[1024px]">
+					<div className="flex items-center gap-2">
+						<div className="flex items-center">
+							{!showSidebar && (
+								<button
+									className="cursor-pointer outline-none left-3 top-5 z-50"
+									onClick={() => setShowSidebar(!showSidebar)}
+								>
+									<List size={38} color="#ffff" />
+								</button>
+							)}
+						</div>
+						<div>
+							<p className="text-sm md:text-base font-extrabold text-white">
+								CREA-PE
+							</p>
+							<p className="text-[4px] text-white w-16 text-center mx-auto">
+								Conselho Regional de Engenharia e Agronomia de Pernambuco
+							</p>
+						</div>
 					</div>
-					<div>
-						<p className="text-sm md:text-base font-extrabold text-white">
-							CREA-PE
-						</p>
-						<p className="text-[4px] text-white w-16 text-center mx-auto">
-							Conselho Regional de Engenharia e Agronomia de Pernambuco
-						</p>
+					<div className="">
+						<ul className="flex items-center ">
+							<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
+								<button
+									type="button"
+									onClick={() => router.push("/notifications")}
+								>
+									<Bell size={30} color="#ffff" />
+								</button>
+							</li>
+							<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
+								<button type="button" onClick={() => router.push("/card")}>
+									<IdentificationCard size={30} color="#ffff" />
+								</button>
+							</li>
+						</ul>
 					</div>
-				</div>
-				<div className="">
-					<ul className="flex items-center ">
-						<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
-							<a href="#">
-								<Bell size={30} color="#ffff" />
-							</a>
-						</li>
-						<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
-							<button type="button" onClick={() => router.push("/card")}>
-								<IdentificationCard size={30} color="#ffff" />
-							</button>
-						</li>
-					</ul>
 				</div>
 			</nav>
 
@@ -65,7 +70,7 @@ export default function Sidebar({ img }) {
 					statusSideBar={showSidebar}
 				>
 					<div
-						className={` top-0 left-0 w-72 bg-blue-600  p-10 pl-20 text-white fixed h-full z-40 ${
+						className={` top-0 left-0 w-72 bg-blue-800  p-10 pl-20 text-white fixed h-full z-40 ${
 							showSidebar ? "translate-x-0 " : "-translate-x-full"
 						}`}
 					>
@@ -79,10 +84,10 @@ export default function Sidebar({ img }) {
 							<div className="flex items-center mt-9 px-3 gap-2">
 								<Image
 									src={`data:image/png;base64,${img}`}
-									width={30}
+									width={0}
 									height={0}
-									alt="Mateus Lopes"
-									className="h-auto w-14 rounded-full"
+									alt={user?.name}
+									className="h-20 w-20 rounded-full"
 								/>
 								<div>
 									<p>Olá,</p>
@@ -99,23 +104,43 @@ export default function Sidebar({ img }) {
 							<ul className="">
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<List size={30} color="#ffff" />
-									<Link href="/dashboard">Início</Link>
+									<button
+										type="button"
+										onClick={() => router.push("/dashboard")}
+									>
+										Início
+									</button>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<Bell size={30} color="#ffff" />
-									<Link href="#">Notificações</Link>
+									<button
+										type="button"
+										onClick={() => router.push("/notifications")}
+									>
+										Notificações
+									</button>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<IdentificationCard size={30} color="#ffff" />
-									<Link href="/card">Carteira Profissional</Link>
+									<button type="button" onClick={() => router.push("/card")}>
+										Carteira Profissional
+									</button>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 									<MagnifyingGlass size={30} color="#ffff" />
-									<Link href="/me">Perfil Profissional</Link>
+									<button type="button" onClick={() => router.push("/me")}>
+										Perfil Profissional
+									</button>
 								</li>
 								<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
-									<Newspaper size={30} color="#ffff" />
-									<Link href="#">Certidão de Registro e Quitação</Link>
+									<Newspaper size={32} color="#ffff" />
+									<button
+										className="text-start"
+										type="button"
+										onClick={() => router.push("#")}
+									>
+										Certidão de Registro e Quitação
+									</button>
 								</li>
 								<li className="p-2 hover:bg-blue-700 rounded-md">
 									<button

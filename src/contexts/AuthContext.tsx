@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
 
 	function signOut() {
 		destroyCookie(undefined, "creapp.token");
+		destroyCookie(undefined, "creapp.user");
 		api.defaults.headers["Authorization"] = undefined;
 		Router.push("/");
 	}
