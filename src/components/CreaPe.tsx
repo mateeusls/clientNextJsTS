@@ -1,10 +1,12 @@
+import { memo } from "react";
+
 interface ColorProps {
 	color?: string;
 	title?: string;
 	paragraph?: string;
 }
 
-export function CreaPe({ color, title, paragraph }: ColorProps) {
+function CreaPe({ color, title, paragraph }: ColorProps) {
 	return (
 		<>
 			<div className="text-center">
@@ -18,3 +20,5 @@ export function CreaPe({ color, title, paragraph }: ColorProps) {
 		</>
 	);
 }
+
+export default memo(CreaPe);

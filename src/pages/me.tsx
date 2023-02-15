@@ -1,4 +1,4 @@
-import { BackRouter } from "@/components/BackRouter";
+import BackRouter from "@/components/BackRouter";
 import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getCard, getImage } from "@/lib/getData";
@@ -14,7 +14,7 @@ export default function Me({ tipoCarteira, foto, dataEmissao }) {
 	return (
 		<>
 			<Head>
-				<title>{user?.name} - CREA APP</title>
+				<title>{user?.name} | CREA</title>
 			</Head>
 			<Sidebar img={foto} />
 			<BackRouter title="PERFIL PROFISSIONAL" />

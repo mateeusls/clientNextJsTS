@@ -1,7 +1,6 @@
 import { AuthContext } from "@/contexts/AuthContext";
 import { cpfMask } from "@/lib/masks";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import {
 	Bell,
@@ -12,10 +11,10 @@ import {
 	Power,
 	XCircle,
 } from "phosphor-react";
-import { useContext, useState } from "react";
+import { memo, useContext, useState } from "react";
 import EscClose from "./EscClose";
 
-export default function Sidebar({ img }) {
+function Sidebar({ img }) {
 	const router = useRouter();
 	const { signOut, user } = useContext(AuthContext);
 	const [showSidebar, setShowSidebar] = useState(false);
@@ -28,7 +27,7 @@ export default function Sidebar({ img }) {
 						<div className="flex items-center">
 							{!showSidebar && (
 								<button
-									className="cursor-pointer outline-none left-3 top-5 z-50"
+									className="cursor-pointer md:hidden outline-none left-3 top-5 z-50"
 									onClick={() => setShowSidebar(!showSidebar)}
 								>
 									<List size={38} color="#ffff" />
@@ -36,14 +35,31 @@ export default function Sidebar({ img }) {
 							)}
 						</div>
 						<div>
-							<p className="text-sm md:text-base font-extrabold text-white">
+							<p className="text-sm md:text-xl font-extrabold text-white">
 								CREA-PE
 							</p>
-							<p className="text-[4px] text-white w-16 text-center mx-auto">
+							<p className="text-[4px] md:text-[5px] w-16 md:w-20 text-white  text-center mx-auto">
 								Conselho Regional de Engenharia e Agronomia de Pernambuco
 							</p>
 						</div>
 					</div>
+					<ul className="hidden md:flex gap-4">
+						<li className="text-lg text-white">
+							<button type="button" onClick={() => router.push("/dashboard")}>
+								Início
+							</button>
+						</li>
+						<li className="text-lg text-white">
+							<button type="button" onClick={() => router.push("/me")}>
+								Perfil
+							</button>
+						</li>
+						<li className="text-lg text-white">
+							<button type="button" onClick={() => router.push("#")}>
+								Certidão
+							</button>
+						</li>
+					</ul>
 					<div className="">
 						<ul className="flex items-center ">
 							<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
@@ -51,12 +67,22 @@ export default function Sidebar({ img }) {
 									type="button"
 									onClick={() => router.push("/notifications")}
 								>
-									<Bell size={30} color="#ffff" />
+									<Bell className="md:hidden" size={30} color="#ffff" />
+									<Bell className="hidden md:block" size={40} color="#ffff" />
 								</button>
 							</li>
 							<li className="flex items-center gap-4 p-2 hover:bg-blue-700 rounded-md">
 								<button type="button" onClick={() => router.push("/card")}>
-									<IdentificationCard size={30} color="#ffff" />
+									<IdentificationCard
+										className="md:hidden"
+										size={30}
+										color="#ffff"
+									/>
+									<IdentificationCard
+										className="hidden md:block"
+										size={40}
+										color="#ffff"
+									/>
 								</button>
 							</li>
 						</ul>
@@ -160,3 +186,5 @@ export default function Sidebar({ img }) {
 		</>
 	);
 }
+
+export default memo(Sidebar);

@@ -1,21 +1,16 @@
-import Head from "next/head";
-import { useContext, useEffect, useState } from "react";
-
 import BackRouter from "@/components/BackRouter";
 import NotificationItem from "@/components/NotificationItem";
 import Sidebar from "@/components/Sidebar";
-import { AuthContext } from "@/contexts/AuthContext";
 import { getImage } from "@/lib/getData";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
+import { memo, useEffect, useState } from "react";
 
-export default function Notifications({ foto }) {
-	const { user } = useContext(AuthContext);
+function UpdateNotification({ foto }) {
 	const router = useRouter();
-	const [newNotification, setNewNotification] = useState("");
 	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
@@ -36,32 +31,37 @@ export default function Notifications({ foto }) {
 			</Head>
 			<Sidebar img={foto} />
 			<BackRouter title="NOTIFICAÇÕES" />
-			<div className="md:w-[1024px] mx-auto py-4 grid gap-2">
+			<div className="md:w-[1024px] mx-auto py-4 grid gap-2 bg-red-500">
 				<div className="hidden md:flex gap-3 border-b-2 border-blue-800 py-5 text-blue-800">
 					<h1 className="text-2xl font-bold">
-						<button type="button" onClick={() => router.push("/dashbord")}>
-							Back
-						</button>
-						<Link href="/notifications/all" className="active:text-white">
+						<button
+							onClick={() => router.push("/notifications/all")}
+							type="button"
+							className="active:text-white"
+						>
 							Todas
-						</Link>
+						</button>
 					</h1>
 					<h1 className="text-2xl font-bold">
-						<Link href="/notifications/update" className="active:text-white">
+						<button
+							onClick={() => router.push("/notifications/update")}
+							type="button"
+							className="active:text-white"
+						>
 							Atualizações
-						</Link>
+						</button>
 					</h1>
 					<h1 className="text-2xl font-bold">
-						<Link href="/notifications/info" className="active:text-white">
+						<button
+							onClick={() => router.push("/notifications/info")}
+							type="button"
+							className="active:text-white"
+						>
 							Informações
-						</Link>
+						</button>
 					</h1>
 				</div>
 
-				<input
-					onChange={(e) => setNewNotification(e.target.value)}
-					value={newNotification}
-				/>
 				{notifications.map((notification) => (
 					<NotificationItem key={notification.id} notification={notification} />
 				))}
@@ -69,6 +69,8 @@ export default function Notifications({ foto }) {
 		</>
 	);
 }
+
+export default memo(UpdateNotification);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);

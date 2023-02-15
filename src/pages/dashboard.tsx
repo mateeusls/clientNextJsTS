@@ -1,5 +1,4 @@
 import Sidebar from "@/components/Sidebar";
-import { AuthContext } from "@/contexts/AuthContext";
 import { getImage } from "@/lib/getData";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -9,7 +8,7 @@ export default function Dashboard({ foto }) {
 	return (
 		<>
 			<Head>
-				<title>Dashboard - CREA APP</title>
+				<title>Dashboard | CREA</title>
 			</Head>
 			<Sidebar img={foto} />
 		</>

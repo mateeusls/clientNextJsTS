@@ -7,8 +7,8 @@ import { useContext } from "react";
 import Glide from "react-glider";
 import QRCode from "react-qr-code";
 
+import BackRouter from "@/components/BackRouter";
 import Sidebar from "@/components/Sidebar";
-import { BackRouter } from "@/components/BackRouter";
 import { AuthContext } from "@/contexts/AuthContext";
 
 import brasaoImg from "@/assets/brasao.png";
@@ -24,7 +24,7 @@ export default function Card({ carteira, imagens, profissional }) {
 	return (
 		<>
 			<Head>
-				<title>Carteira Profissional - CREA APP</title>
+				<title>Carteira Profissional | CREA</title>
 				<style>
 					{`
 						.glider-track {

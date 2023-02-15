@@ -1,8 +1,5 @@
 import { Head, Html, Main, NextScript } from "next/document";
 
-const APP_NAME = "CREA-PE APP";
-const APP_DESCRIPTION = "";
-
 export default function Document() {
 	return (
 		<Html lang="en">
