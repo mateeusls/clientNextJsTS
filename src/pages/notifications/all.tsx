@@ -29,7 +29,7 @@ function AllNotification({ foto }) {
 			<Head>
 				<title>Notificações | CREA</title>
 			</Head>
-			<Sidebar img={foto} />
+			<Sidebar />
 			<BackRouter title="NOTIFICAÇÕES" />
 			<div className="md:w-[1024px] mx-auto py-4 grid gap-2 bg-yellow-200">
 				<div className="hidden md:flex gap-3 border-b-2 border-blue-800 py-5 text-blue-800">
