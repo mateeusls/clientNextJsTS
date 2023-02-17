@@ -90,10 +90,13 @@ function CargoFuncao() {
 	const handleSubmitForm = async (datas: Inputs, e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-		const { data } = await axios("http://localhost:3333/forms/cargo_funcao", {
-			method: "POST",
-			data: datas,
-		});
+		const { data } = await axios(
+			"http://187.87.138.2222:3333/forms/cargo_funcao",
+			{
+				method: "POST",
+				data: datas,
+			}
+		);
 
 		if (data.instance.Status === "SUCCESS") {
 			setLoading(false);
