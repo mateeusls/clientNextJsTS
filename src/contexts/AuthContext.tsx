@@ -45,6 +45,26 @@ export function AuthProvider({ children }) {
 		Router.push("/");
 	}
 
+	async function signIn({ login, password }: SignInData) {
+		const { data } = await api.post<AxiosResponse | any>("/auth", {
+			login,
+			password,
+		});
+		const { user, token } = data;
+
+		setCookie(undefined, "creapp.token", token, {
+			maxAge: 60 * 60 * 1, // 1 hour
+		});
+		setCookie(undefined, "creapp.user", user.rnp, {
+			maxAge: 60 * 60 * 1, // 1 hour
+		});
+
+		setUser(user);
+		api.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+		Router.push("/dashboard");
+	}
+
 	useEffect(() => {
 		const { "creapp.token": token } = parseCookies();
 
@@ -66,26 +86,6 @@ export function AuthProvider({ children }) {
 				});
 		}
 	}, []);
-
-	async function signIn({ login, password }: SignInData) {
-		const { data } = await api.post<AxiosResponse | any>("/auth", {
-			login,
-			password,
-		});
-		const { user, token } = data;
-
-		setCookie(undefined, "creapp.token", token, {
-			maxAge: 60 * 60 * 1, // 1 hour
-		});
-		setCookie(undefined, "creapp.user", user.rnp, {
-			maxAge: 60 * 60 * 1, // 1 hour
-		});
-
-		setUser(user);
-		api.defaults.headers["Authorization"] = `Bearer ${token}`;
-
-		Router.push("/dashboard");
-	}
 
 	return (
 		<AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
