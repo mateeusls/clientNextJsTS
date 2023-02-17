@@ -1,7 +1,6 @@
 import BackRouter from "@/components/BackRouter";
 import NotificationItem from "@/components/NotificationItem";
 import Sidebar from "@/components/Sidebar";
-import { getImage } from "@/lib/getData";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -9,7 +8,7 @@ import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 import { memo, useEffect, useState } from "react";
 
-function AllNotification({ foto }) {
+function AllNotification() {
 	const router = useRouter();
 	const [notifications, setNotifications] = useState([]);
 
@@ -73,7 +72,7 @@ function AllNotification({ foto }) {
 export default memo(AllNotification);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
+	const { ["creapp.token"]: token } = parseCookies(ctx);
 
 	if (!token) {
 		return {
@@ -84,11 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		};
 	}
 
-	const { foto } = await getImage(rnp);
-
 	return {
-		props: {
-			foto,
-		},
+		props: {},
 	};
 };

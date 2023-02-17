@@ -1,14 +1,12 @@
 import DashButton from "@/components/DashButton";
 import Sidebar from "@/components/Sidebar";
-import { AuthContext } from "@/contexts/AuthContext";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies } from "nookies";
 import { NotePencil } from "phosphor-react";
-import { memo, useContext } from "react";
+import { memo } from "react";
 
-function Registro({ rnp }) {
-	const { user } = useContext(AuthContext);
+function Registro() {
 	return (
 		<div className="w-full min-h-screen">
 			<Head>
@@ -24,14 +22,6 @@ function Registro({ rnp }) {
 					</div>
 					<div className="relative w-full flex justify-center py-40  bg-gray-300">
 						<div className="absolute -top-4 md:-top-6 md:w-[52rem] md:px-24 grid grid-cols-3 gap-2 px-2">
-							{rnp && (
-								<DashButton
-									route={"/services/register/registro_profissional"}
-									title={"Registro Profissional"}
-								>
-									<NotePencil size={32} color="#050505" />
-								</DashButton>
-							)}
 							<DashButton route={"#"} title={"Registro de Empresa"}>
 								<NotePencil size={32} color="#050505" />
 							</DashButton>
@@ -46,20 +36,18 @@ function Registro({ rnp }) {
 export default memo(Registro);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
+	const { ["creapp.token"]: token } = parseCookies(ctx);
 
-	// if (!token) {
-	// 	return {
-	// 		redirect: {
-	// 			destination: "/login",
-	// 			permanent: false,
-	// 		},
-	// 	};
-	// }
+	if (!token) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+			},
+		};
+	}
 
 	return {
-		props: {
-			rnp,
-		},
+		props: {},
 	};
 };
