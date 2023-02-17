@@ -1,4 +1,5 @@
 import { AuthContext } from "@/contexts/AuthContext";
+import { getImage } from "@/lib/getData";
 import { cpfMask } from "@/lib/masks";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -11,17 +12,23 @@ import {
 	Power,
 	XCircle,
 } from "phosphor-react";
-import { memo, useContext, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import EscClose from "./EscClose";
 
-interface SidebarProps {
-	img?: string;
-}
-
-function Sidebar({ img }: SidebarProps) {
+function Sidebar() {
 	const router = useRouter();
 	const { signOut, user } = useContext(AuthContext);
 	const [showSidebar, setShowSidebar] = useState(false);
+	const [foto, setFoto] = useState("");
+
+	useEffect(() => {
+		async function setImage() {
+			const { foto } = await getImage(user.rnp);
+			setFoto(foto);
+		}
+
+		setImage();
+	}, [user.rnp]);
 
 	return (
 		<>
@@ -31,7 +38,7 @@ function Sidebar({ img }: SidebarProps) {
 						<div className="flex items-center">
 							{!showSidebar && (
 								<button
-									className="cursor-pointer md:hidden outline-none left-3 top-5 z-50"
+									className="cursor-pointer md:hidden outline-none left-3 top-5"
 									onClick={() => setShowSidebar(!showSidebar)}
 								>
 									<List size={38} color="#ffff" />
@@ -122,7 +129,7 @@ function Sidebar({ img }: SidebarProps) {
 						<div className="bg-yellow-500 absolute top-0 left-0 w-full h-32">
 							<div className="flex items-center mt-9 px-3 gap-2">
 								<Image
-									src={`data:image/png;base64,${img}`}
+									src={`data:image/png;base64,${foto}`}
 									width={0}
 									height={0}
 									alt={user?.name}

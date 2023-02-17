@@ -1,6 +1,5 @@
 import DashButton from "@/components/DashButton";
 import Sidebar from "@/components/Sidebar";
-import { getImage } from "@/lib/getData";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies } from "nookies";
@@ -12,13 +11,13 @@ import {
 } from "phosphor-react";
 import { memo } from "react";
 
-function Services({ foto }) {
+function Services() {
 	return (
 		<div className="w-full min-h-screen">
 			<Head>
 				<title>Serviços | CREA</title>
 			</Head>
-			<Sidebar img={foto} />
+			<Sidebar />
 			<div className="mt-10">
 				<div className="w-80 md:w-96 mx-auto">
 					<div className="relative flex flex-col">
@@ -71,7 +70,7 @@ function Services({ foto }) {
 export default memo(Services);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
+	const { ["creapp.token"]: token } = parseCookies(ctx);
 
 	if (!token) {
 		return {
@@ -82,11 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		};
 	}
 
-	const { foto } = await getImage(rnp);
-
 	return {
-		props: {
-			foto,
-		},
+		props: {},
 	};
 };

@@ -16,7 +16,9 @@ export default function DashButton({
 }: DashButtonProps) {
 	return (
 		<button
-			className={`flex col-start-${position} flex-col items-center justify-center gap-2 p-3 md:p-4  bg-white hover:brightness-75 rounded-xl border-2 border-blue-300`}
+			className={`flex ${
+				position ? position : ""
+			} flex-col items-center justify-center gap-2 p-3 md:p-4  bg-white hover:brightness-75 rounded-xl border-2 border-blue-300`}
 			onClick={() => Router.push(`${route}`)}
 		>
 			{children}

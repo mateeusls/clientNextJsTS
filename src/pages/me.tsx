@@ -1,14 +1,14 @@
 import BackRouter from "@/components/BackRouter";
 import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
-import { getCard, getImage } from "@/lib/getData";
+import { getCard } from "@/lib/getData";
 import { cpfMask } from "@/lib/masks";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies } from "nookies";
 import { useContext } from "react";
 
-export default function Me({ tipoCarteira, foto, dataEmissao }) {
+export default function Me({ tipoCarteira, dataEmissao }) {
 	const { user } = useContext(AuthContext);
 
 	return (
@@ -17,7 +17,7 @@ export default function Me({ tipoCarteira, foto, dataEmissao }) {
 				<title>{user?.name} | CREA</title>
 			</Head>
 			<div className="w-full min-h-screen">
-				<Sidebar img={foto} />
+				<Sidebar />
 				<BackRouter title="PERFIL PROFISSIONAL" />
 				<div className="w-[22rem]  mx-auto mt-5 bg-white rounded-lg shadow-md">
 					<div className="p-3">
@@ -81,11 +81,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	}
 
 	const { tipoCarteira, dataEmissao } = await getCard(rnp);
-	const { foto } = await getImage(rnp);
 
 	return {
 		props: {
-			foto,
 			tipoCarteira,
 			dataEmissao,
 		},

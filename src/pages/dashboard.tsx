@@ -1,6 +1,5 @@
 import DashButton from "@/components/DashButton";
 import Sidebar from "@/components/Sidebar";
-import { getImage } from "@/lib/getData";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies } from "nookies";
@@ -14,13 +13,13 @@ import {
 	WarningCircle,
 } from "phosphor-react";
 
-export default function Dashboard({ foto }) {
+export default function Dashboard() {
 	return (
 		<div className="w-full min-h-screen">
 			<Head>
 				<title>Dashboard | CREA</title>
 			</Head>
-			<Sidebar img={foto} />
+			<Sidebar />
 			<div className="mt-10">
 				<div className="w-80 md:w-96 mx-auto">
 					<div className="relative flex flex-col">
@@ -42,7 +41,7 @@ export default function Dashboard({ foto }) {
 								</label>
 							</div>
 						</div>
-						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-2xl md:after:text-5xl after:text-blue-800 z-30"></p>
+						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-2xl md:after:text-5xl after:text-blue-800"></p>
 					</div>
 				</div>
 				<div className="flex flex-col items-center w-full md:w-[64rem] mx-auto rounded-lg">
@@ -71,7 +70,11 @@ export default function Dashboard({ foto }) {
 							<DashButton route={"#"} title={"Sobre"}>
 								<WarningCircle size={32} color="#050505" />
 							</DashButton>
-							<DashButton route={"#"} title={"Redes sociais"} position="2">
+							<DashButton
+								route={"#"}
+								title={"Redes sociais"}
+								position="col-start-2"
+							>
 								<ShareNetwork size={32} color="#050505" />
 							</DashButton>
 						</div>
@@ -83,7 +86,7 @@ export default function Dashboard({ foto }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
+	const { ["creapp.token"]: token } = parseCookies(ctx);
 
 	if (!token) {
 		return {
@@ -94,11 +97,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		};
 	}
 
-	const { foto } = await getImage(rnp);
-
 	return {
-		props: {
-			foto,
-		},
+		props: {},
 	};
 };

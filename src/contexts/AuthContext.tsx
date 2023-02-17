@@ -52,7 +52,14 @@ export function AuthProvider({ children }) {
 			api
 				.post("/auth/verify", { token })
 				.then((response) => {
-					setUser(response.data);
+					const user = {
+						id: response.data.id,
+						name: response.data.name,
+						email: response.data.email,
+						cpf: response.data.cpf,
+						rnp: response.data.rnp,
+					};
+					setUser(user);
 				})
 				.catch((error) => {
 					console.log(error);
@@ -65,17 +72,16 @@ export function AuthProvider({ children }) {
 			login,
 			password,
 		});
-		const { token, userData } = data;
+		const { user, token } = data;
 
 		setCookie(undefined, "creapp.token", token, {
 			maxAge: 60 * 60 * 1, // 1 hour
 		});
-		setCookie(undefined, "creapp.user", userData.rnp, {
+		setCookie(undefined, "creapp.user", user.rnp, {
 			maxAge: 60 * 60 * 1, // 1 hour
 		});
 
-		setUser(userData);
-
+		setUser(user);
 		api.defaults.headers["Authorization"] = `Bearer ${token}`;
 
 		Router.push("/dashboard");

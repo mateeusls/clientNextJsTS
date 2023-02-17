@@ -34,7 +34,7 @@ export default function Card({ carteira, imagens, profissional }) {
 				</style>
 			</Head>
 			<div className="w-full min-h-screen">
-				<Sidebar img={imagens.foto} />
+				<Sidebar />
 				<BackRouter title="CARTEIRA PROFISSIONAL" />
 				<div className="">
 					<Glide

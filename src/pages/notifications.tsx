@@ -5,14 +5,13 @@ import BackRouter from "@/components/BackRouter";
 import NotificationItem from "@/components/NotificationItem";
 import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
-import { getImage } from "@/lib/getData";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
 
-export default function Notifications({ foto }) {
+export default function Notifications() {
 	const { user } = useContext(AuthContext);
 	const router = useRouter();
 	const [newNotification, setNewNotification] = useState("");
@@ -34,7 +33,7 @@ export default function Notifications({ foto }) {
 			<Head>
 				<title>Notificações | CREA</title>
 			</Head>
-			<Sidebar img={foto} />
+			<Sidebar />
 			<BackRouter title="NOTIFICAÇÕES" />
 			<div className="md:w-[1024px] mx-auto py-4 grid gap-2">
 				<div className="hidden md:flex gap-3 border-b-2 border-blue-800 py-5 text-blue-800">
@@ -71,7 +70,7 @@ export default function Notifications({ foto }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);
+	const { ["creapp.token"]: token } = parseCookies(ctx);
 
 	if (!token) {
 		return {
@@ -82,11 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		};
 	}
 
-	const { foto } = await getImage(rnp);
-
 	return {
-		props: {
-			foto,
-		},
+		props: {},
 	};
 };
