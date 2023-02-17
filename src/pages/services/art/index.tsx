@@ -1,12 +1,10 @@
 import DashButton from "@/components/DashButton";
 import Sidebar from "@/components/Sidebar";
-import { AuthContext } from "@/contexts/AuthContext";
 import Head from "next/head";
 import { Asterisk } from "phosphor-react";
-import { memo, useContext } from "react";
+import { memo } from "react";
 
 function Art() {
-	const { user } = useContext(AuthContext);
 	return (
 		<div className="w-full min-h-screen">
 			<Head>
