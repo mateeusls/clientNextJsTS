@@ -5,20 +5,18 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { parseCookies } from "nookies";
 import {
-	Gear,
+	ClipboardText,
 	MagnifyingGlass,
-	MapPin,
-	Newspaper,
-	ShareNetwork,
-	ShieldStar,
-	WarningCircle,
+	NotePencil,
+	Pencil,
 } from "phosphor-react";
+import { memo } from "react";
 
-export default function Dashboard({ foto }) {
+function Services({ foto }) {
 	return (
 		<div className="w-full min-h-screen">
 			<Head>
-				<title>Dashboard | CREA</title>
+				<title>Serviços | CREA</title>
 			</Head>
 			<Sidebar img={foto} />
 			<div className="mt-10">
@@ -42,37 +40,25 @@ export default function Dashboard({ foto }) {
 								</label>
 							</div>
 						</div>
-						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-2xl md:after:text-5xl after:text-blue-800 z-30"></p>
+						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-2xl md:after:text-5xl after:text-blue-800 z-50"></p>
 					</div>
 				</div>
 				<div className="flex flex-col items-center w-full md:w-[64rem] mx-auto rounded-lg">
 					<div className="bg-yellow-600 w-full md:w-[55.5rem] p-7 md:p-12 rounded-t">
 						<h1 className="text-center text-xl md:text-3xl text-white font-semibold mb-2">
-							Pesquisa de Serviços
+							Serviços
 						</h1>
 					</div>
 					<div className="relative w-full flex justify-center py-40  bg-gray-300">
-						<div className="absolute -top-4 md:-top-6 md:w-[52rem] md:h-96 md:px-24 grid grid-cols-3 gap-2 px-2">
-							<DashButton route={"#"} title={"Denúncias"}>
-								<ShieldStar size={32} color="#050505" />
+						<div className="absolute -top-4 md:-top-6 md:w-[52rem] md:px-24 grid grid-cols-3 gap-2 px-2">
+							<DashButton route={"/services/register"} title={"Registro"}>
+								<NotePencil size={32} color="#050505" />
 							</DashButton>
-							<DashButton route={"#"} title={"Consultas"}>
-								<MagnifyingGlass size={32} color="#050505" weight="bold" />
+							<DashButton route={"/services/art"} title={"ART"}>
+								<Pencil size={32} color="#050505" />
 							</DashButton>
-							<DashButton route={"#"} title={"Noticias"}>
-								<Newspaper size={32} color="#050505" />
-							</DashButton>
-							<DashButton route={"#"} title={"Unidades"}>
-								<MapPin size={32} color="#050505" />
-							</DashButton>
-							<DashButton route={"/services"} title={"Serviços"}>
-								<Gear size={32} color="#050505" />
-							</DashButton>
-							<DashButton route={"#"} title={"Sobre"}>
-								<WarningCircle size={32} color="#050505" />
-							</DashButton>
-							<DashButton route={"#"} title={"Redes sociais"} position="2">
-								<ShareNetwork size={32} color="#050505" />
+							<DashButton route={"#"} title={"CAT"}>
+								<ClipboardText size={32} color="#050505" />
 							</DashButton>
 						</div>
 					</div>
@@ -81,6 +67,8 @@ export default function Dashboard({ foto }) {
 		</div>
 	);
 }
+
+export default memo(Services);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const { ["creapp.token"]: token, ["creapp.user"]: rnp } = parseCookies(ctx);

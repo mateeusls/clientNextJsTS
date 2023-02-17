@@ -7,11 +7,11 @@ import CreaPe from "@/components/CreaPe";
 
 import crealogoImg from "@/assets/crealogo.png";
 import govlogoImg from "@/assets/govlogo.png";
-import LoadingScreen from "@/components/Loading";
 import { AuthContext } from "@/contexts/AuthContext";
 import { cpfMask } from "@/lib/masks";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { parseCookies } from "nookies";
 
 type Inputs = {
@@ -27,10 +27,8 @@ export default function Login() {
 	} = useForm<Inputs>();
 	const { signIn } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
-	const [loading, setLoading] = useState(false);
 
 	const handleSignIn = async (data: Inputs) => {
-		setLoading(true);
 		const { login, password } = data;
 		const loginClean = login.replace(/\D/g, "");
 		const dataForm = {
@@ -146,9 +144,9 @@ export default function Login() {
 					<div>
 						<p className="text-center text-gray-500">
 							Crie uma{" "}
-							<a href="#" className="text-blue-700 font-semibold">
+							<Link href="/register" className="text-blue-700 font-semibold">
 								conta
-							</a>
+							</Link>
 						</p>
 						<p className="text-center text-gray-500">
 							Esqueceu a senha?{" "}
@@ -158,7 +156,6 @@ export default function Login() {
 						</p>
 					</div>
 				</div>
-				{loading && <LoadingScreen />}
 			</div>
 		</>
 	);

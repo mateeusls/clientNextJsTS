@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { memo, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -22,7 +22,7 @@ type Inputs = {
 	confirmpassword: string;
 };
 
-export default function Register() {
+function Register() {
 	const {
 		register,
 		handleSubmit,
@@ -50,13 +50,22 @@ export default function Register() {
 
 		if (captcha) {
 			if (password !== confirmpassword) {
-				alert("As senhas não são iguais");
+				toast.warning(`Senhas não coincidem`, {
+					position: "top-right",
+					autoClose: false,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+					theme: "colored",
+				});
 			} else {
 				const { user, message } = await RegisterUser(dataForm);
 				if (user.id) {
 					toast.success(`Usuário ${user.name} cadastrado com sucesso`, {
 						position: "top-right",
-						autoClose: false,
+						autoClose: 5000,
 						hideProgressBar: false,
 						closeOnClick: true,
 						pauseOnHover: true,
@@ -303,3 +312,5 @@ export default function Register() {
 		</>
 	);
 }
+
+export default memo(Register);

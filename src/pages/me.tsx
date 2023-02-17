@@ -16,47 +16,49 @@ export default function Me({ tipoCarteira, foto, dataEmissao }) {
 			<Head>
 				<title>{user?.name} | CREA</title>
 			</Head>
-			<Sidebar img={foto} />
-			<BackRouter title="PERFIL PROFISSIONAL" />
-			<div className="w-[22rem]  mx-auto mt-5 bg-white rounded-lg shadow-md">
-				<div className="p-3">
-					<h5 className="mb-2 border-b-2 border-blue-800 text-base font-bold tracking-tight text-blue-800">
-						Informações do Profissional
-					</h5>
+			<div className="w-full min-h-screen">
+				<Sidebar img={foto} />
+				<BackRouter title="PERFIL PROFISSIONAL" />
+				<div className="w-[22rem]  mx-auto mt-5 bg-white rounded-lg shadow-md">
+					<div className="p-3">
+						<h5 className="mb-2 border-b-2 border-blue-800 text-base font-bold tracking-tight text-blue-800">
+							Informações do Profissional
+						</h5>
 
-					<div className="grid grid-cols-1 gap-2">
-						<div>
-							<strong className="md:text-lg font-medium text-blue-800 dark:text-blue-800">
-								Nome
-							</strong>
-							<p className="text-md">{user?.name}</p>
-						</div>
-						<div className="grid grid-cols-2 items-center">
+						<div className="grid grid-cols-1 gap-2">
 							<div>
-								<strong className=" font-medium text-blue-800 dark:text-blue-800">
-									CPF
+								<strong className="md:text-lg font-medium text-blue-800 dark:text-blue-800">
+									Nome
 								</strong>
-								<p className="text-sm">{user?.cpf && cpfMask(user?.cpf)}</p>
+								<p className="text-md">{user?.name}</p>
 							</div>
-							<div>
-								<strong className=" font-medium text-blue-800 dark:text-blue-800">
-									Tipo
-								</strong>
-								<p className="text-sm">{tipoCarteira}</p>
+							<div className="grid grid-cols-2 items-center">
+								<div>
+									<strong className=" font-medium text-blue-800 dark:text-blue-800">
+										CPF
+									</strong>
+									<p className="text-sm">{user?.cpf && cpfMask(user?.cpf)}</p>
+								</div>
+								<div>
+									<strong className=" font-medium text-blue-800 dark:text-blue-800">
+										Tipo
+									</strong>
+									<p className="text-sm">{tipoCarteira}</p>
+								</div>
 							</div>
-						</div>
-						<div className="grid grid-cols-2 items-center">
-							<div>
-								<strong className=" font-medium text-blue-800 dark:text-blue-800">
-									Registro Crea-N°
-								</strong>
-								<p className="text-sm">{user?.rnp}</p>
-							</div>
-							<div>
-								<strong className=" font-medium text-blue-800 dark:text-blue-800">
-									Data de Emissão
-								</strong>
-								<p className="text-sm">{dataEmissao}</p>
+							<div className="grid grid-cols-2 items-center">
+								<div>
+									<strong className=" font-medium text-blue-800 dark:text-blue-800">
+										Registro Crea-N°
+									</strong>
+									<p className="text-sm">{user?.rnp}</p>
+								</div>
+								<div>
+									<strong className=" font-medium text-blue-800 dark:text-blue-800">
+										Data de Emissão
+									</strong>
+									<p className="text-sm">{dataEmissao}</p>
+								</div>
 							</div>
 						</div>
 					</div>

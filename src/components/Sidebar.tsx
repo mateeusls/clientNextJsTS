@@ -14,7 +14,11 @@ import {
 import { memo, useContext, useState } from "react";
 import EscClose from "./EscClose";
 
-function Sidebar({ img }) {
+interface SidebarProps {
+	img?: string;
+}
+
+function Sidebar({ img }: SidebarProps) {
 	const router = useRouter();
 	const { signOut, user } = useContext(AuthContext);
 	const [showSidebar, setShowSidebar] = useState(false);
@@ -83,6 +87,15 @@ function Sidebar({ img }) {
 										size={40}
 										color="#ffff"
 									/>
+								</button>
+							</li>
+							<li className="hidden md:block p-2 hover:bg-blue-700 rounded-md">
+								<button
+									onClick={signOut}
+									type="button"
+									className=" md:flex items-center gap-4 hover:bg-blue-700 rounded-md w-full"
+								>
+									<Power size={30} color="#ffff" />
 								</button>
 							</li>
 						</ul>
