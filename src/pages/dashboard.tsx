@@ -1,8 +1,6 @@
 import DashButton from "@/components/DashButton";
 import Sidebar from "@/components/Sidebar";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { parseCookies } from "nookies";
 import {
 	Gear,
 	MagnifyingGlass,
@@ -85,19 +83,19 @@ export default function Dashboard() {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const { ["creapp.token"]: token } = parseCookies(ctx);
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+// 	const { ["creapp.token"]: token } = parseCookies(ctx);
 
-	if (!token) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
+// 	if (!token) {
+// 		return {
+// 			redirect: {
+// 				destination: "/login",
+// 				permanent: false,
+// 			},
+// 		};
+// 	}
 
-	return {
-		props: {},
-	};
-};
+// 	return {
+// 		props: {},
+// 	};
+// };
