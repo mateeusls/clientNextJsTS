@@ -1,14 +1,16 @@
+import { Eye as EyeIcon, EyeOff as EyeOffIcon } from "lucide-react";
 import Image from "next/image";
-import { Eye, EyeSlash } from "phosphor-react";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import CreaPe from "@/components/CreaPe";
 
 import crealogoImg from "@/assets/crealogo.png";
 import govlogoImg from "@/assets/govlogo.png";
+import { Input } from "@/components/Form/Input";
+import InputMask from "@/components/Form/InputMask";
 import { AuthContext } from "@/contexts/AuthContext";
-import { cpfMask } from "@/lib/masks";
+import { Form } from "@unform/web";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -25,14 +27,16 @@ export default function Login() {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<Inputs>();
+	const formRef = useRef();
 	const { signIn } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
 
 	const handleSignIn = async (data: Inputs) => {
+		const loginClean = data.login.replace(/\D/g, "");
+		data.login = loginClean;
 		const { login, password } = data;
-		const loginClean = login.replace(/\D/g, "");
 		const dataForm = {
-			login: loginClean,
+			login,
 			password,
 		};
 		await signIn(dataForm);
@@ -58,71 +62,39 @@ export default function Login() {
 							<CreaPe color="" paragraph="font-semibold" title="font-bold" />
 						</div>
 					</div>
-					<form
-						onSubmit={handleSubmit(handleSignIn)}
+					<Form
+						ref={formRef}
+						onSubmit={handleSignIn}
 						className="w-full md:w-96 px-6"
 					>
 						<div className="flex flex-col gap-3 w-full">
 							<div>
-								<label htmlFor="login">
-									<input
-										type="text"
-										id="login"
-										{...register("login", {
-											required: true,
-										})}
-										onChange={(e) => {
-											const { value } = e.target;
-											e.target.value = cpfMask(value);
-										}}
-										className={`${
-											errors.login?.type === "required"
-												? "border-red-500"
-												: "border-blue-400"
-										} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-										placeholder="Digite seu login"
-									/>
-									{/* {errors.login?.type === "required" && (
-								<p role="alert" className="text-red-500 text-center mt-1">
-									Nome is required
-								</p>
-							)} */}
-								</label>
+								<InputMask
+									name="login"
+									className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
+									placeholder="Digite seu CPF"
+									mask={"999.999.999-99"}
+								/>
 							</div>
 							<div className="relative">
-								<label htmlFor="password" className="relative">
-									<input
-										type={showPassword ? "text" : "password"}
-										id="password"
-										{...register("password", { required: true })}
-										className={`${
-											errors.password?.type === "required"
-												? "border-red-500"
-												: "border-blue-400"
-										} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-										placeholder="Password"
-									/>
-									<button
-										type="button"
-										className="absolute right-4 -top-0.5"
-										onClick={(e) => {
-											e.preventDefault();
-											setShowPassword(!showPassword);
-										}}
-									>
-										{showPassword && <EyeSlash size={24} color="#7cb1ff" />}
-										{!showPassword && <Eye size={24} color="#7cb1ff" />}
-									</button>
-								</label>
+								<Input
+									name="password"
+									type={showPassword ? "text" : "password"}
+									className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full mb-3`}
+									placeholder="Sua senha"
+								/>
+								<button
+									type="button"
+									className="absolute right-4 top-2 md:top-3"
+									onClick={(e) => {
+										e.preventDefault();
+										setShowPassword(!showPassword);
+									}}
+								>
+									{showPassword && <EyeOffIcon size={24} color="#7cb1ff" />}
+									{!showPassword && <EyeIcon size={24} color="#7cb1ff" />}
+								</button>
 							</div>
-							{/* {showError?.message && (
-								<p role="alert" className="text-red-500 text-center mt-1">
-									{showError.message}
-								</p>
-							)}
-							{!showError?.message && (
-								<p role="alert" className="text-red-500 text-center mt-1"></p>
-							)} */}
 						</div>
 						<button
 							type="submit"
@@ -140,7 +112,7 @@ export default function Login() {
 								className="w-14"
 							/>
 						</button>
-					</form>
+					</Form>
 					<div>
 						<p className="text-center text-gray-500">
 							Crie uma{" "}

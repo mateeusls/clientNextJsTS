@@ -23,7 +23,7 @@ function Sidebar() {
 
 	useEffect(() => {
 		async function setImage() {
-			const { foto } = await getImage(user.rnp);
+			const { foto } = await getImage(user?.rnp);
 			setFoto(foto);
 		}
 

@@ -1,58 +1,162 @@
-import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
-import { memo, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { memo, useRef, useState } from "react";
 
 import crealogoImg from "@/assets/crealogo.png";
+import ButtonSubmit from "@/components/ButtonSubmit";
 import CreaPe from "@/components/CreaPe";
-import LoadingScreen from "@/components/Loading";
-import { cpfMask } from "@/lib/masks";
+import { Input } from "@/components/Form/Input";
+import InputMask from "@/components/Form/InputMask";
 import { RegisterUser } from "@/lib/register";
+import { FormHandles, SubmitHandler } from "@unform/core";
+import { Form } from "@unform/web";
+import axios from "axios";
+import {
+	ArrowLeft as ArrowLeftIcon,
+	Eye as EyeIcon,
+	EyeOff as EyeOffIcon,
+} from "lucide-react";
+import Link from "next/link";
 import Router from "next/router";
-import { ArrowLeft, Eye, EyeSlash } from "phosphor-react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
-type Inputs = {
+type RegisterDataProps = {
 	name: string;
-	cpf: string;
 	email: string;
+	cpf: string;
 	password: string;
-	confirmpassword: string;
+	confirmPassword: string;
 };
 
 function Register() {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<Inputs>();
 	const [showPassword, setShowPassword] = useState(false);
 	const [confirmPassword, setConfirmPassword] = useState(false);
+	const [nameValue, setNameValue] = useState("");
+	const [emailValue, setEmailValue] = useState("");
 	const [captcha, setCaptcha] = useState(false);
-	const [loading, setLoading] = useState(false);
+
+	const formRef = useRef<FormHandles>(null);
 
 	function onChange(value: any) {
 		setCaptcha(true);
 	}
 
-	const handleRegister = async (data: Inputs) => {
-		const { name, cpf, email, password, confirmpassword } = data;
+	const checkUser = async (cpf: string) => {
 		const cpfClean = cpf.replace(/\D/g, "");
+		axios
+			.post(`http://187.87.138.222:3333/api/Profissionais/Listar`, {
+				cpf: cpfClean,
+			})
+			.then((response) => {
+				setNameValue(response.data.nme);
+				setEmailValue(response.data.eml);
+			})
+			.catch((error) => {
+				setNameValue("CPF inválido");
+				setEmailValue("");
+			});
+	};
 
-		const dataForm = {
-			name,
-			cpf: cpfClean,
-			email,
-			password,
-		};
+	const handleSubmit: SubmitHandler<RegisterDataProps> = async (
+		data: RegisterDataProps,
+		{ reset }
+	) => {
+		const { password, confirmPassword } = data;
 
-		if (captcha) {
-			if (password !== confirmpassword) {
-				toast.warning(`Senhas não coincidem`, {
+		try {
+			// Remove all previous errors
+			const schema = Yup.object().shape({
+				name: Yup.string()
+					.required("Nome obrigatório")
+					.matches(
+						/^([a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/,
+						"Digite seu nome completo"
+					),
+				email: Yup.string()
+					.email("Digite um e-mail válido")
+					.required("E-mail obrigatório"),
+				cpf: Yup.string().required("CPF obrigatório"),
+				password: Yup.string()
+					.min(6)
+					.matches(/[a-z]/, "Senha deve conter pelo menos uma letra minúscula")
+					.matches(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
+					.matches(/[0-9]/, "Senha deve conter pelo menos um número")
+					.matches(
+						/[^a-zA-Z0-9]/,
+						"Senha deve conter pelo menos um caractere especial"
+					)
+					.required("Senha obrigatória"),
+				confirmPassword: Yup.string()
+					.oneOf([Yup.ref("password"), null], "Senhas não conferem")
+					.required("Confirmação de senha obrigatória"),
+			});
+
+			await schema.validate(data, {
+				// Validation all fields and return all errors
+				abortEarly: false,
+			});
+
+			// Validation passed,
+			const cpfClean = data.cpf.replace(/\D/g, "");
+			data.cpf = cpfClean;
+
+			if (captcha) {
+				if (password !== confirmPassword) {
+					toast.warning(`Senhas não coincidem`, {
+						position: "top-right",
+						autoClose: false,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: "colored",
+					});
+				} else {
+					const { user, message } = await RegisterUser(data);
+					if (user.id) {
+						toast.success(`Usuário ${user.name} cadastrado com sucesso`, {
+							position: "top-right",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							theme: "colored",
+						});
+						reset({
+							name: "",
+							email: "",
+							cpf: "",
+							password: "",
+							confirmPassword: "",
+						});
+
+						Router.push("/login");
+					}
+
+					if (message) {
+						toast.warning("Usuário já cadastrado", {
+							position: "top-right",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							theme: "colored",
+							style: {
+								width: "100%",
+							},
+						});
+					}
+				}
+			} else {
+				toast.warning("É necessário preencher o captcha corretamente.", {
 					position: "top-right",
-					autoClose: false,
+					autoClose: 5000,
 					hideProgressBar: false,
 					closeOnClick: true,
 					pauseOnHover: true,
@@ -60,58 +164,23 @@ function Register() {
 					progress: undefined,
 					theme: "colored",
 				});
-			} else {
-				const { user, message } = await RegisterUser(dataForm);
-				if (user.id) {
-					toast.success(`Usuário ${user.name} cadastrado com sucesso`, {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-						theme: "colored",
-					});
-
-					Router.push("/login");
-				}
-
-				if (message) {
-					toast.warning("Usuário já cadastrado", {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-						theme: "colored",
-						style: {
-							width: "100%",
-						},
-					});
-				}
 			}
-		} else {
-			toast.warning("É necessário preencher o captcha corretamente.", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				theme: "colored",
-			});
+
+			formRef.current?.setErrors({});
+		} catch (err) {
+			const validationErrors = {};
+			if (err instanceof Yup.ValidationError) {
+				err.inner.forEach((error) => {
+					validationErrors[error.path] = error.message;
+				});
+				formRef.current.setErrors(validationErrors);
+			}
 		}
 	};
 
 	return (
 		<>
-			<Head>
-				<title>Cadastro | CREA</title>
-			</Head>
+			<title>Cadastro | CREA</title>
 			<div className="relative w-full min-h-screen">
 				<div className="md:max-w-[62.5rem] md:h-screen mx-auto p-8">
 					<div className="w-full h-full grid items-center pt-7 pb-12">
@@ -126,6 +195,7 @@ function Register() {
 											height={0}
 											alt={"Crea Logo"}
 											className="w-44"
+											quality={80}
 										/>
 										<CreaPe
 											color=""
@@ -137,149 +207,87 @@ function Register() {
 								<div>
 									<Link
 										href="/login"
-										className="flex items-center gap-2 justify-center mt-8 hover:text-blue-600 text-blue-800 font-medium"
+										className="flex items-center gap-2 justify-center mt-3 md:mt-8 hover:text-blue-600 text-blue-800 font-medium"
 									>
-										<ArrowLeft size={24} weight="bold" />
+										<ArrowLeftIcon size={24} />
 										Voltar para login
 									</Link>
 								</div>
 							</section>
 							<section>
-								<form
-									onSubmit={handleSubmit(handleRegister)}
-									className="w-full rounded-xl p-6 md:p-10 bg-blue-800"
+								<Form
+									ref={formRef}
+									className="w-full md:w-96 px-6"
+									onSubmit={handleSubmit}
 								>
-									<h1 className="text-2xl font-medium mb-8 text-white text-center">
-										Crie sua conta
-									</h1>
-									<div className="flex flex-col gap-3 w-full">
-										<div>
-											<label htmlFor="name">
-												<input
-													type="text"
-													id="name"
-													{...register("name", { required: true })}
-													className={`${
-														errors.name?.type === "required"
-															? "border-red-500"
-															: "border-blue-400"
-													} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-													placeholder="Seu Nome"
-												/>
-												{/* {errors.name?.type === "required" && (
-												<p role="alert" className="text-red-500 text-center mt-1">
-													Nome is required
-												</p>
-											)} */}
-											</label>
-										</div>
-										<div>
-											<label htmlFor="email">
-												<input
-													type="email"
-													id="email"
-													{...register("email", { required: true })}
-													className={`${
-														errors.email?.type === "required"
-															? "border-red-500"
-															: "border-blue-400"
-													} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-													placeholder="Seu E-mail"
-												/>
-												{/* {errors.name?.type === "required" && (
-												<p role="alert" className="text-red-500 text-center mt-1">
-													Nome is required
-												</p>
-											)} */}
-											</label>
-										</div>
-										<div>
-											<label htmlFor="cpf">
-												<input
-													type="text"
-													id="cpf"
-													{...register("cpf", {
-														required: true,
-													})}
-													onChange={(e) => {
-														const { value } = e.target;
-														e.target.value = cpfMask(value);
-													}}
-													className={`${
-														errors.cpf?.type === "required"
-															? "border-red-500"
-															: "border-blue-400"
-													} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-													placeholder="Seu CPF"
-												/>
-												{/* {errors.cpf?.type === "required" && (
-												<p role="alert" className="text-red-500 text-center mt-1">
-													Nome is required
-												</p>
-											)} */}
-											</label>
-										</div>
-										<div className="relative">
-											<label htmlFor="password" className="relative">
-												<input
-													type={showPassword ? "text" : "password"}
-													id="password"
-													{...register("password", { required: true })}
-													className={`${
-														errors.password?.type === "required"
-															? "border-red-500"
-															: "border-blue-400"
-													} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-													placeholder="Sua Senha"
-												/>
-												<button
-													type="button"
-													className="absolute right-4 -top-0.5"
-													onClick={(e) => {
-														e.preventDefault();
-														setShowPassword(!showPassword);
-													}}
-												>
-													{showPassword && (
-														<EyeSlash size={24} color="#7cb1ff" />
-													)}
-													{!showPassword && <Eye size={24} color="#7cb1ff" />}
-												</button>
-											</label>
-										</div>
-										<div className="relative">
-											<label htmlFor="confirmpassword" className="relative">
-												<input
-													type={confirmPassword ? "text" : "password"}
-													id="confirmpassword"
-													{...register("confirmpassword", {
-														required: true,
-														shouldUnregister: true,
-													})}
-													className={`${
-														errors.confirmpassword?.type === "required"
-															? "border-red-500"
-															: "border-blue-400"
-													} px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
-													placeholder="Confirme sua senha"
-												/>
-												<button
-													type="button"
-													className="absolute right-4 -top-0.5"
-													onClick={(e) => {
-														e.preventDefault();
-														setConfirmPassword(!confirmPassword);
-													}}
-												>
-													{confirmPassword && (
-														<EyeSlash size={24} color="#7cb1ff" />
-													)}
-													{!confirmPassword && (
-														<Eye size={24} color="#7cb1ff" />
-													)}
-												</button>
-											</label>
-										</div>
+									<div className="mb-3">
+										<InputMask
+											name="cpf"
+											onBlur={(e) => checkUser(e.target.value)}
+											className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
+											placeholder="Digite seu CPF"
+											mask={"999.999.999-99"}
+										/>
+									</div>
+									<div className="mb-3">
+										<Input
+											name="name"
+											value={nameValue}
+											className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
+											placeholder="Digite seu nome completo"
+											disabled={nameValue ? true : false}
+										/>
+									</div>
+									<div className="mb-3">
+										<Input
+											name="email"
+											value={emailValue}
+											type={"email"}
+											className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
+											placeholder="Digite seu e-mail"
+										/>
+									</div>
+									<div className="relative">
+										<Input
+											name="password"
+											type={showPassword ? "text" : "password"}
+											className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full mb-3`}
+											placeholder="Sua senha"
+										/>
+										<button
+											type="button"
+											className="absolute right-4 top-2 md:top-3"
+											onClick={(e) => {
+												e.preventDefault();
+												setShowPassword(!showPassword);
+											}}
+										>
+											{showPassword && <EyeOffIcon size={24} color="#7cb1ff" />}
+											{!showPassword && <EyeIcon size={24} color="#7cb1ff" />}
+										</button>
+									</div>
+									<div className="relative">
+										<Input
+											name="confirmPassword"
+											type={confirmPassword ? "text" : "password"}
+											className={`border-blue-400 px-3 py-2 md:py-3 border outline-none rounded-lg w-full`}
+											placeholder="Confirme sua senha"
+										/>
+										<button
+											type="button"
+											className="absolute right-4 top-2 md:top-3"
+											onClick={(e) => {
+												e.preventDefault();
+												setConfirmPassword(!confirmPassword);
+											}}
+										>
+											{confirmPassword && (
+												<EyeOffIcon size={24} color="#7cb1ff" />
+											)}
+											{!confirmPassword && (
+												<EyeIcon size={24} color="#7cb1ff" />
+											)}
+										</button>
 									</div>
 									<div className="hidden md:flex justify-center my-3">
 										<ReCAPTCHA
@@ -295,19 +303,12 @@ function Register() {
 											badge="bottomleft"
 										/>
 									</div>
-
-									<button
-										type="submit"
-										className="px-3 py-2 md:py-3 mt-4 rounded-lg w-full bg-blue-600 text-white"
-									>
-										Cadastrar
-									</button>
-								</form>
+									<ButtonSubmit title="Cadastrar" />
+								</Form>
 							</section>
 						</div>
 					</div>
 				</div>
-				{loading && <LoadingScreen />}
 			</div>
 		</>
 	);
