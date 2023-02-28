@@ -5,7 +5,7 @@ import ptBR from "date-fns/locale/pt-BR";
 export async function getCard(rnp: string) {
 	const { data } = await axios({
 		method: "post",
-		url: "http://187.87.138.222:3333/api/Carteiras/Listar",
+		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Carteiras/Listar",
 		data: { rnp },
 	});
 
@@ -22,7 +22,7 @@ export async function getCard(rnp: string) {
 export async function getProfissional(rnp: string) {
 	const { data } = await axios({
 		method: "post",
-		url: "http://187.87.138.222:3333/api/Profissionais/Listar",
+		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Profissionais/Listar",
 		data: { rnp },
 	});
 
@@ -43,7 +43,7 @@ export async function getProfissional(rnp: string) {
 export async function getImage(rnp: string) {
 	const { data } = await axios({
 		method: "post",
-		url: "http://187.87.138.222:3333/api/Imagens/Listar",
+		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Imagens/Listar",
 		data: { rnp },
 	});
 
