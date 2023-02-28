@@ -45,9 +45,12 @@ function Register() {
 	const checkUser = async (cpf: string) => {
 		const cpfClean = cpf.replace(/\D/g, "");
 		axios
-			.post(`http://187.87.138.222:3333/api/Profissionais/Listar`, {
-				cpf: cpfClean,
-			})
+			.post(
+				`https://integrationsesuiteh.herokuapp.com/confea/api/Profissionais/Listar`,
+				{
+					cpf: cpfClean,
+				}
+			)
 			.then((response) => {
 				setNameValue(response.data.nme);
 				setEmailValue(response.data.eml);

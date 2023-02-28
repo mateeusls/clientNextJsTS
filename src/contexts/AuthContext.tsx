@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
 	}
 
 	async function signIn({ login, password }: SignInData) {
-		const { data } = await api.post<AxiosResponse | any>("/auth", {
+		const { data } = await api.post<AxiosResponse | any>("crea/auth", {
 			login,
 			password,
 		});
@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
 
 		if (token) {
 			api
-				.post("/auth/verify", { token })
+				.post("crea/verify", { token })
 				.then((response) => {
 					const user = {
 						id: response.data.id,

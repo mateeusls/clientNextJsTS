@@ -13,7 +13,7 @@ type AxiosResponse = {
 };
 
 export async function RegisterUser(dataForm: RegisterData) {
-	const { data } = await api.post<AxiosResponse | any>("/user", {
+	const { data } = await api.post<AxiosResponse | any>("crea/user", {
 		...dataForm,
 	});
 
