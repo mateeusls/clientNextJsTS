@@ -46,10 +46,13 @@ export function AuthProvider({ children }) {
 	}
 
 	async function signIn({ login, password }: SignInData) {
-		const { data } = await api.post<AxiosResponse | any>("crea/auth", {
-			login,
-			password,
-		});
+		const { data } = await api.post<AxiosResponse | any>(
+			"authentication/auth",
+			{
+				login,
+				password,
+			}
+		);
 		const { user, token } = data;
 
 		setCookie(undefined, "creapp.token", token, {
@@ -70,7 +73,7 @@ export function AuthProvider({ children }) {
 
 		if (token) {
 			api
-				.post("crea/verify", { token })
+				.post("authentication/verify", { token })
 				.then((response) => {
 					const user = {
 						id: response.data.id,

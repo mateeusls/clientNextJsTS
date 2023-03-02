@@ -14,6 +14,7 @@ import warningImg from "@/assets/warning.svg";
 import ButtonSubmit from "@/components/ButtonSubmit";
 import { Checkbox } from "@/components/Form/Checkbox";
 import InputMask from "@/components/Form/InputMask";
+import LoadingScreen from "@/components/Loading";
 import Sidebar from "@/components/Sidebar";
 import { AuthContext } from "@/contexts/AuthContext";
 import { FormHandles, SubmitHandler } from "@unform/core";
@@ -98,6 +99,8 @@ export default function CargoFuncao() {
 	const { user } = useContext(AuthContext);
 	const formRef = useRef<FormHandles>(null);
 	const [isSubmit, setIsSubmit] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const handleSubmit: SubmitHandler<Inputs> = async (
 		data: Inputs,
 		{ reset }
@@ -191,7 +194,6 @@ export default function CargoFuncao() {
 			});
 
 			// Validation passed,
-			console.log(data);
 			axios
 				.post<AxiosResponse | any>(
 					"https://creapp.herokuapp.com/sesuite/cargo_funcao",
@@ -319,6 +321,7 @@ export default function CargoFuncao() {
 				<title>Cargo ou Função | ART | CREA</title>
 			</Head>
 			<Sidebar />
+			{isLoading && <LoadingScreen />}
 			<main className="w-full ">
 				<div className="py-4 px-2">
 					<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
@@ -842,17 +845,22 @@ export default function CargoFuncao() {
 										</div>
 									</fieldset>
 								</fieldset>
-								<ButtonSubmit title="Enviar" />
+								<ButtonSubmit
+									title="Enviar"
+									onClick={() => setIsLoading(!isLoading)}
+								/>
 							</Form>
 						</div>
 					</div>
 				</div>
 				<footer className="flex flex-col py-2 justify-center items-center text-white bg-blue-800">
-					<p>
+					<p className="text-center">
 						Conselho Regional de Engenharia e Agronomia de Pernambuco - Avbenida
 						Agamenón Magalhães 2978, Espinheiro, Recife, PE
 					</p>
-					<p>Sistema de Informações Técnicas e Administrativas do CREA-PE</p>
+					<p className="text-center">
+						Sistema de Informações Técnicas e Administrativas do CREA-PE
+					</p>
 				</footer>
 			</main>
 		</>

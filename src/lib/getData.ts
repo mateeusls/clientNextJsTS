@@ -1,13 +1,9 @@
-import axios from "axios";
+import { api } from "@/services/api";
 import { format } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 
 export async function getCard(rnp: string) {
-	const { data } = await axios({
-		method: "post",
-		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Carteiras/Listar",
-		data: { rnp },
-	});
+	const { data } = await api.post("/confea/Carteiras/Listar", { rnp });
 
 	const titulos = [data.crtTit1, data.crtTit2, data.crtTit3, data.crtTit4];
 
@@ -20,11 +16,7 @@ export async function getCard(rnp: string) {
 }
 
 export async function getProfissional(rnp: string) {
-	const { data } = await axios({
-		method: "post",
-		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Profissionais/Listar",
-		data: { rnp },
-	});
+	const { data } = await api.post("/confea/Profissionais/Listar", { rnp });
 
 	return {
 		nameMae: data?.nmeMae,
@@ -41,11 +33,7 @@ export async function getProfissional(rnp: string) {
 }
 
 export async function getImage(rnp: string) {
-	const { data } = await axios({
-		method: "post",
-		url: "https://integrationsesuiteh.herokuapp.com/confea/api/Imagens/Listar",
-		data: { rnp },
-	});
+	const { data } = await api.post("/confea/Imagens/Listar", { rnp });
 
 	return {
 		foto: data.foto,

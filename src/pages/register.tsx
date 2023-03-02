@@ -194,11 +194,7 @@ function Register() {
 	return (
 		<>
 			<title>Cadastro | CREA</title>
-			{isLoading && (
-				<div className="absolute top-0 left-0 bottom-0 w-full min-h-screen ">
-					<LoadingScreen />
-				</div>
-			)}
+			{isLoading && <LoadingScreen />}
 			<div className="relative w-full min-h-screen">
 				<div className="md:max-w-[62.5rem] md:h-screen mx-auto p-8">
 					<div className="w-full h-full grid items-center pt-7 pb-12">

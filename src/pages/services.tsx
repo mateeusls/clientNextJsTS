@@ -37,7 +37,7 @@ function Services() {
 								</label>
 							</div>
 						</div>
-						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-2xl md:after:text-5xl after:text-blue-800 z-50"></p>
+						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-xl md:after:text-5xl after:text-blue-800 z-30"></p>
 					</div>
 				</div>
 				<div className="flex flex-col items-center w-full md:w-[64rem] mx-auto rounded-lg">
