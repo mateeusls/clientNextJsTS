@@ -2,11 +2,11 @@ import { ClipLoader } from "react-spinners";
 
 const LoadingScreen = () => {
 	return (
-		<div className="absolute top-0 right-0 left-0 bottom-0 flex fle-col items-center justify-center  bg-[#0000006b] z-50">
+		<div className="fixed z-50 top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-40 transition-all duration-300">
 			<div>
 				<ClipLoader
 					color={"#044a8c"}
-					size={150}
+					size={100}
 					aria-label="Loading Spinner"
 					data-testid="loader"
 				/>

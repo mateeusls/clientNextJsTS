@@ -194,7 +194,7 @@ export default function CargoFuncao() {
 			console.log(data);
 			axios
 				.post<AxiosResponse | any>(
-					"https://integrationsesuiteh.herokuapp.com/crea/cargo_funcao",
+					"https://creapp.herokuapp.com/sesuite/cargo_funcao",
 					data
 				)
 				.then((response) => {

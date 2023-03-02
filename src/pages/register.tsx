@@ -6,10 +6,11 @@ import ButtonSubmit from "@/components/ButtonSubmit";
 import CreaPe from "@/components/CreaPe";
 import { Input } from "@/components/Form/Input";
 import InputMask from "@/components/Form/InputMask";
+import LoadingScreen from "@/components/Loading";
 import { RegisterUser } from "@/lib/register";
+import { api } from "@/services/api";
 import { FormHandles, SubmitHandler } from "@unform/core";
 import { Form } from "@unform/web";
-import axios from "axios";
 import {
 	ArrowLeft as ArrowLeftIcon,
 	Eye as EyeIcon,
@@ -34,31 +35,40 @@ function Register() {
 	const [confirmPassword, setConfirmPassword] = useState(false);
 	const [nameValue, setNameValue] = useState("");
 	const [emailValue, setEmailValue] = useState("");
-	const [captcha, setCaptcha] = useState(false);
+	const [isVerified, setIsVerified] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const formRef = useRef<FormHandles>(null);
 
 	function onChange(value: any) {
-		setCaptcha(true);
+		console.log("Captcha value:", value);
+		setIsVerified(true);
 	}
 
 	const checkUser = async (cpf: string) => {
 		const cpfClean = cpf.replace(/\D/g, "");
-		axios
-			.post(
-				`https://integrationsesuiteh.herokuapp.com/confea/api/Profissionais/Listar`,
-				{
+		setIsLoading(true);
+		if (cpfClean === "") {
+			setNameValue("");
+			setEmailValue("");
+			setIsLoading(false);
+		} else {
+			api
+				.post(`confea/Profissionais/Listar`, {
 					cpf: cpfClean,
-				}
-			)
-			.then((response) => {
-				setNameValue(response.data.nme);
-				setEmailValue(response.data.eml);
-			})
-			.catch((error) => {
-				setNameValue("CPF inválido");
-				setEmailValue("");
-			});
+				})
+				.then((response) => {
+					setNameValue(response.data.nme);
+					setEmailValue(response.data.eml);
+					setIsLoading(false);
+				})
+				.catch((error) => {
+					console.log(error);
+					setNameValue("CPF inválido");
+					setEmailValue("");
+					setIsLoading(false);
+				});
+		}
 	};
 
 	const handleSubmit: SubmitHandler<RegisterDataProps> = async (
@@ -104,7 +114,7 @@ function Register() {
 			const cpfClean = data.cpf.replace(/\D/g, "");
 			data.cpf = cpfClean;
 
-			if (captcha) {
+			if (isVerified) {
 				if (password !== confirmPassword) {
 					toast.warning(`Senhas não coincidem`, {
 						position: "top-right",
@@ -184,6 +194,11 @@ function Register() {
 	return (
 		<>
 			<title>Cadastro | CREA</title>
+			{isLoading && (
+				<div className="absolute top-0 left-0 bottom-0 w-full min-h-screen ">
+					<LoadingScreen />
+				</div>
+			)}
 			<div className="relative w-full min-h-screen">
 				<div className="md:max-w-[62.5rem] md:h-screen mx-auto p-8">
 					<div className="w-full h-full grid items-center pt-7 pb-12">
@@ -306,7 +321,10 @@ function Register() {
 											badge="bottomleft"
 										/>
 									</div>
-									<ButtonSubmit title="Cadastrar" />
+									<ButtonSubmit
+										title="Cadastrar"
+										onClick={() => setIsLoading(!isLoading)}
+									/>
 								</Form>
 							</section>
 						</div>

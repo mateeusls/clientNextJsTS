@@ -28,7 +28,7 @@ export default function Card({ carteira, imagens, profissional }) {
 				<style>
 					{`
 						.glider-track {
-							height: 30rem;
+							height: 32rem;
 						}
 					`}
 				</style>
