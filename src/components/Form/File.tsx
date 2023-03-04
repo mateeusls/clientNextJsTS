@@ -39,7 +39,13 @@ export default function File({ name, show, ...rest }: InputProps) {
 	return (
 		<>
 			{show && preview && <img src={preview} alt="Preview" width="100" />}
-			<input type="file" ref={inputRef} onChange={handlePreview} {...rest} />
+			<input
+				type="file"
+				name={name}
+				ref={inputRef}
+				onChange={handlePreview}
+				{...rest}
+			/>
 		</>
 	);
 }

@@ -40,8 +40,8 @@ function Services() {
 						<p className="absolute top-28 left-0 right-0 text-center after:content-['\25bc'] after:block after:text-xl md:after:text-5xl after:text-blue-800 z-30"></p>
 					</div>
 				</div>
-				<div className="flex flex-col items-center w-full md:w-[64rem] mx-auto rounded-lg">
-					<div className="bg-yellow-600 w-full md:w-[55.5rem] p-7 md:p-12 rounded-t">
+				<div className="flex flex-col items-center w-full lg:w-[55.5rem] mx-auto rounded-lg">
+					<div className="bg-yellow-600 w-full md:w-full p-7 md:p-12 rounded-t">
 						<h1 className="text-center text-xl md:text-3xl text-white font-semibold mb-2">
 							Serviços
 						</h1>

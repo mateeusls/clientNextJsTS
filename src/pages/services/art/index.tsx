@@ -22,11 +22,11 @@ function Art() {
 						<div className="absolute -top-4 md:-top-6 md:w-[52rem] md:px-24 grid grid-cols-3 gap-2 px-2">
 							<DashButton
 								route={"/services/art/cargo_funcao"}
-								title={"ART Cargo ou Função"}
+								title={"Cargo ou Função"}
 							>
 								<Asterisk size={32} color="#050505" />
 							</DashButton>
-							<DashButton route={"#"} title={"ART Obra e Serviço"}>
+							<DashButton route={"#"} title={"Obra e Serviço"}>
 								<Asterisk size={32} color="#050505" />
 							</DashButton>
 						</div>

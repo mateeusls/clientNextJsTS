@@ -43,7 +43,7 @@ export function Checkbox({ name, value, label, ...rest }: InputProps) {
 	}, [defaultValue, fieldName, registerField, defaultChecked]);
 
 	return (
-		<div className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2">
+		<div className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2 ">
 			<input
 				defaultChecked={defaultChecked}
 				ref={inputRef}

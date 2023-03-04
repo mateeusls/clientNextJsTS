@@ -41,7 +41,6 @@ function Register() {
 	const formRef = useRef<FormHandles>(null);
 
 	function onChange(value: any) {
-		console.log("Captcha value:", value);
 		setIsVerified(true);
 	}
 
@@ -63,7 +62,6 @@ function Register() {
 					setIsLoading(false);
 				})
 				.catch((error) => {
-					console.log(error);
 					setNameValue("CPF inválido");
 					setEmailValue("");
 					setIsLoading(false);

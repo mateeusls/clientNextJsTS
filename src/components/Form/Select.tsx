@@ -14,6 +14,7 @@ interface SelectProps {
 	label: string;
 	children: ReactNode;
 	localRef?: MutableRefObject<any>;
+	classeName?: string;
 }
 
 type Props = SelectHTMLAttributes<HTMLSelectElement> & SelectProps;
@@ -23,7 +24,14 @@ type Props = SelectHTMLAttributes<HTMLSelectElement> & SelectProps;
  *
  * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select
  */
-export function Select({ name, label, children, localRef, ...rest }: Props) {
+export function Select({
+	name,
+	label,
+	children,
+	localRef,
+	classeName,
+	...rest
+}: Props) {
 	const selectRef = useRef<HTMLSelectElement>(null);
 
 	const { fieldName, defaultValue, registerField, error } = useField(name);
@@ -45,7 +53,7 @@ export function Select({ name, label, children, localRef, ...rest }: Props) {
 	}, [fieldName, registerField]);
 
 	return (
-		<div>
+		<div className={classeName}>
 			<label className="text-white" htmlFor={fieldName}>
 				{label}
 			</label>
@@ -54,7 +62,7 @@ export function Select({ name, label, children, localRef, ...rest }: Props) {
 				id={fieldName}
 				ref={mergeRefs([selectRef, localRef])}
 				defaultValue={defaultValue}
-				className="form-select w-full py-2 px-3 leading-5 rounded-md bg-white border border-gray-300 shadow-sm focus:outline-none focus:shadow-outline-blue-300 transition duration-150 ease-in-out"
+				className={`form-select w-full py-2 px-3 leading-5 rounded-md bg-white border border-gray-300 shadow-sm focus:outline-none focus:shadow-outline-blue-300 transition duration-150 ease-in-out disabled:bg-gray-500`}
 				{...rest}
 			>
 				{children}

@@ -15,6 +15,7 @@ type AddressProps = {
 	uf?: string;
 	tipoLogradouro: string;
 	pais?: string;
+	pontoReferencia?: string;
 	isSubmit: boolean;
 	setIsSubmit: (value: boolean) => void;
 };
@@ -30,6 +31,7 @@ export function Address({
 	uf,
 	tipoLogradouro,
 	pais,
+	pontoReferencia,
 	isSubmit,
 	setIsSubmit,
 }: AddressProps) {
@@ -43,6 +45,7 @@ export function Address({
 	const complementoRef = useRef<HTMLInputElement>(null);
 	const paisRef = useRef<HTMLInputElement>(null);
 	const tipoLogradouroRef = useRef<HTMLSelectElement>(null);
+	const pontoReferenciaRef = useRef<HTMLInputElement>(null);
 
 	const tipoLogradouroOptions = [
 		{ value: "", label: "SELECIONE", selected: true },
@@ -110,6 +113,7 @@ export function Address({
 			setUfValue("");
 			if (paisRef.current) paisRef.current.value = "";
 			if (tipoLogradouroRef.current) tipoLogradouroRef.current.value = "";
+			if (pontoReferenciaRef.current) pontoReferenciaRef.current.value = "";
 			numeroRef.current.value = "";
 			complementoRef.current.value = "";
 			setIsSubmit(false);
@@ -188,7 +192,7 @@ export function Address({
 					className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 				/>
 			</div>
-			<div className="grid grid-cols-1 md:grid-cols-4 items-center gap-3 md:gap-2 mb-2">
+			<div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3 md:gap-2 mb-2">
 				<Input
 					name={bairro}
 					value={bairroValue}
@@ -215,6 +219,16 @@ export function Address({
 						name={pais}
 						localRef={paisRef}
 						label="País"
+						className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+					/>
+				)}
+			</div>
+			<div>
+				{pontoReferencia && (
+					<Input
+						name={pontoReferencia}
+						localRef={pontoReferenciaRef}
+						label="Ponto de Referência"
 						className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 					/>
 				)}

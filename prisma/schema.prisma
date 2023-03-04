@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updateAt    DateTime
+  state       Boolean  @default(false)
+  authorLogin String
+  User        User     @relation(fields: [authorLogin], references: [cpf], onDelete: Cascade)
+
+  @@index([authorLogin], map: "Notification_authorLogin_fkey")
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  name         String
+  cpf          String         @unique
+  rnp          String?        @unique
+  password     String
+  Notification Notification[]
+}

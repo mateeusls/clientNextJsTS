@@ -3,6 +3,8 @@ import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { createContext, useEffect, useState } from "react";
 
 import { api } from "@/services/api";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 type User = {
 	id: number;
@@ -46,13 +48,10 @@ export function AuthProvider({ children }) {
 	}
 
 	async function signIn({ login, password }: SignInData) {
-		const { data } = await api.post<AxiosResponse | any>(
-			"authentication/auth",
-			{
-				login,
-				password,
-			}
-		);
+		const { data } = await axios.post<AxiosResponse | any>("/api/auth", {
+			login,
+			password,
+		});
 		const { user, token } = data;
 
 		setCookie(undefined, "creapp.token", token, {
@@ -72,8 +71,8 @@ export function AuthProvider({ children }) {
 		const { "creapp.token": token } = parseCookies();
 
 		if (token) {
-			api
-				.post("authentication/verify", { token })
+			axios
+				.post("/api/auth/verify", { token })
 				.then((response) => {
 					const user = {
 						id: response.data.id,
@@ -85,7 +84,9 @@ export function AuthProvider({ children }) {
 					setUser(user);
 				})
 				.catch((error) => {
-					console.log(error);
+					toast.error("Sessão expirada, faça login novamente!");
+					signOut();
+					Router.push("/");
 				});
 		}
 	}, []);

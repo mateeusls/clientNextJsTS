@@ -1,7 +1,5 @@
 import { AuthContext } from "@/contexts/AuthContext";
-import { getImage } from "@/lib/getData";
 import { cpfMask } from "@/lib/masks";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import {
 	Bell,
@@ -12,7 +10,7 @@ import {
 	Power,
 	XCircle,
 } from "phosphor-react";
-import { memo, useContext, useEffect, useState } from "react";
+import { memo, useContext, useState } from "react";
 import EscClose from "./EscClose";
 
 function Sidebar() {
@@ -21,15 +19,15 @@ function Sidebar() {
 	const [showSidebar, setShowSidebar] = useState(false);
 	const [foto, setFoto] = useState("");
 
-	useEffect(() => {
-		async function setImage() {
-			const { foto } = await getImage(user?.rnp);
-			setFoto(foto);
-		}
+	// useEffect(() => {
+	// 	async function setImage() {
+	// 		const { foto } = await getImage(user?.rnp);
+	// 		setFoto(foto);
+	// 	}
 
-		setImage();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	// 	setImage();
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, []);
 
 	return (
 		<>
@@ -129,13 +127,13 @@ function Sidebar() {
 						</button>
 						<div className="bg-yellow-500 absolute top-0 left-0 w-full h-32">
 							<div className="flex items-center mt-9 px-3 gap-2">
-								<Image
+								{/* <Image
 									src={`data:image/png;base64,${foto}`}
 									width={0}
 									height={0}
 									alt={user?.name}
 									className="h-20 w-20 rounded-full"
-								/>
+								/> */}
 								<div>
 									<p>Olá,</p>
 									<p>

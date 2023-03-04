@@ -201,7 +201,6 @@ export default function CargoFuncao() {
 				)
 				.then((response) => {
 					const { instance, activity } = response.data;
-					console.log(response.data);
 
 					if (instance.Status === "FAILURE") {
 						toast.error(instance.Detail);
@@ -322,547 +321,534 @@ export default function CargoFuncao() {
 			</Head>
 			<Sidebar />
 			{isLoading && <LoadingScreen />}
-			<main className="w-full ">
-				<div className="py-4 px-2">
-					<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
-						<div className="bg-yellow-600 w-full p-7 md:py-7 rounded-t">
-							<h1 className="text-center text-xl md:text-3xl text-white font-semibold mb-2">
-								ART Cargo ou Função
-							</h1>
-						</div>
-						<div className="w-full flex justify-center bg-blue-800 py-6">
-							<Form
-								ref={formRef}
-								className="w-full px-6"
-								onSubmit={handleSubmit}
-							>
+			<div className="py-4 px-2">
+				<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
+					<div className="bg-yellow-600 w-full p-7 md:py-7 rounded-t">
+						<h1 className="text-center text-xl md:text-3xl text-white font-semibold mb-2">
+							Cargo ou Função
+						</h1>
+					</div>
+					<div className="w-full flex justify-center bg-blue-800 py-6">
+						<Form ref={formRef} className="w-full px-6" onSubmit={handleSubmit}>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+									Selecione o Modelo
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Radio
+										options={modelOptions}
+										name="tipomodelo"
+										className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+									/>
+								</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Dados da ART
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Input
+										name="numeroart"
+										label="Número da ART"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="dtregistroart"
+										type="date"
+										defaultValue={new Date().toISOString().substr(0, 10)}
+										label="Data de Registro da ART"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+							</fieldset>
+							<Select name="formaregistro" label="Forma de Registro">
+								{formaRegistroOptions.map((option) => (
+									<option key={option.value} value={option.value}>
+										{option.label}
+									</option>
+								))}
+							</Select>
+							<fieldset className="border p-4 rounded w-full my-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									ART de Substituição
+								</legend>
+								<div>
+									<Input
+										name="artsubstituicao"
+										label="Número da ART de Substituição"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Textarea
+										name="motivosubstitui"
+										label="Motivo da Substituição"
+									/>
+								</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									ART Complementar
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Input
+										name="artcomplementar"
+										label="Número da ART"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Select name="participacao" label="Participação">
+										{participacaoOptions.map((option) => (
+											<option key={option.value} value={option.value}>
+												{option.label}
+											</option>
+										))}
+									</Select>
+								</div>
+								<div>
+									<Textarea name="motivoartepoca" label="Observação" />
+								</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Responsável Técnico
+								</legend>
+								<div className=" grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+									<Input
+										value={user?.name}
+										name="nomeprofissiona"
+										label="Nome Responsável Técnico"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										value={user?.rnp}
+										name="rnp"
+										label="RNP"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<InputMask
+										value={user?.cpf}
+										name="cpfresptecnico"
+										label="CPF do Responsável Técnico"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+										mask="999.999.999-99"
+									/>
+								</div>
+								<TitleList />
+								<div className=" grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Input
+										name="telefonetecnico"
+										label="Telefone"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										value={user?.email}
+										name="emailresponsave"
+										label="E-mail do Responsável Técnico"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+								<Address
+									title="Endereço do Responsável Técnico"
+									cep="cepresponsavel"
+									tipoLogradouro="auxlogradourtec"
+									logradouro="enderecorespons"
+									numero="numenderecoresp"
+									complemento="complementoresp"
+									bairro="bairroresponsav"
+									cidade="municipiorespon"
+									uf="ufresponsavel"
+									pais="paisresponsavel"
+									isSubmit={isSubmit}
+									setIsSubmit={setIsSubmit}
+								/>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Contratante
+								</legend>
 								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-sm font-medium leading-6 text-white dark:text-white">
-										Selecione o Modelo
+									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+										Denominação da Contratante
 									</legend>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Input
+										name="denominacontrat"
+										label="Razão Social"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</fieldset>
+								<div className=" grid grid-cols-1 md:grid-cols-2 items-center gap-2">
+									<Input
+										name="cnpjcontratante"
+										label="CNPJ da Contratante"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="registronocrea"
+										label="Registro no CREA"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+								<Address
+									title="Endereço da Contratante"
+									cep="cep"
+									tipoLogradouro="auxlogradcontra"
+									logradouro="enderecocontrat"
+									numero="numenderecontra"
+									complemento="complementocont"
+									bairro="bairrocontratan"
+									cidade="municipiocontra"
+									uf="ufcontratante"
+									pais="paiscontratante"
+									isSubmit={isSubmit}
+									setIsSubmit={setIsSubmit}
+								/>
+								<fieldset className="border p-4 rounded w-full my-2">
+									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+										Tipo de Coordenada
+									</legend>
+									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 border p-4 rounded w-full mb-4">
 										<Radio
-											options={modelOptions}
-											name="tipomodelo"
+											options={coordenadaOptions}
+											name="rbtipocoordenad"
 											className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
 										/>
 									</div>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Dados da ART
-									</legend>
 									<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
 										<Input
-											name="numeroart"
-											label="Número da ART"
+											name="latitude"
+											label="Latitude"
 											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 										/>
 										<Input
-											name="dtregistroart"
-											type="date"
-											defaultValue={new Date().toISOString().substr(0, 10)}
-											label="Data de Registro da ART"
+											name="longitude"
+											label="Longitude"
 											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 										/>
 									</div>
 								</fieldset>
-								<Select name="formaregistro" label="Forma de Registro">
-									{formaRegistroOptions.map((option) => (
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Tipo de Contratante
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2 ">
+									<Radio
+										options={contratanteOptions}
+										name="rbcontratante"
+										className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+									/>
+								</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Vínculo Contratual
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 border p-4 rounded w-full mb-4">
+									<Radio
+										options={vinculocontratualOptions}
+										name="vinculocontratu"
+										className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
+									<Input
+										name="auxdescentraliz"
+										label="Descentralizada"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									{/* <Input
+											name="outros"
+											label="Outros"
+											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+										/> */}
+									<Input
+										name="auxcentralizada"
+										label="Centralizada"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+								<Address
+									title="Endereço da Unidade Administrativa"
+									cep="cepunidadeadm"
+									tipoLogradouro="auxlograundadm"
+									logradouro="enderecounidadm"
+									numero="numenderecoadm"
+									complemento="complementounid"
+									bairro="bairrounidadadm"
+									cidade="municipiounidad"
+									isSubmit={isSubmit}
+									setIsSubmit={setIsSubmit}
+								/>
+								<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
+									<Input
+										type="date"
+										name="iniciovinculoco"
+										label="Data de Início"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										type="date"
+										name="terminovinculo"
+										label="Previsão de Término"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="auxtipovinculo"
+										label="Tipo de Vínculo"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
+									<Input
+										name="auxdesignacao"
+										label="Designação do Cargo"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									{/* <Input
+											name="Mudar"
+											label="Cargo ou Função fora da Lista"
+											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+										/> */}
+								</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full my-2">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Atividade Técnica
+								</legend>
+								<Select name="atividadeprofis" label="Atividade Profissional">
+									{atividadeProfissionalOptions.map((option) => (
 										<option key={option.value} value={option.value}>
 											{option.label}
 										</option>
 									))}
 								</Select>
-								<fieldset className="border p-4 rounded w-full my-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										ART de Substituição
-									</legend>
-									<div>
-										<Input
-											name="artsubstituicao"
-											label="Número da ART de Substituição"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Textarea
-											name="motivosubstitui"
-											label="Motivo da Substituição"
-										/>
-									</div>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										ART Complementar
-									</legend>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
-										<Input
-											name="artcomplementar"
-											label="Número da ART"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Select name="participacao" label="Participação">
-											{participacaoOptions.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</Select>
-									</div>
-									<div>
-										<Textarea name="motivoartepoca" label="Observação" />
-									</div>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Responsável Técnico
-									</legend>
-									<div className=" grid grid-cols-1 md:grid-cols-3 items-center gap-2">
-										<Input
-											value={user?.name}
-											name="nomeprofissiona"
-											label="Nome Responsável Técnico"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											value={user?.rnp}
-											name="rnp"
-											label="RNP"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<InputMask
-											value={user?.cpf}
-											name="cpfresptecnico"
-											label="CPF do Responsável Técnico"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-											mask="999.999.999-99"
-										/>
-									</div>
-									<TitleList />
-									<div className=" grid grid-cols-1 md:grid-cols-2 items-center gap-2">
-										<Input
-											name="telefonetecnico"
-											label="Telefone"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											value={user?.email}
-											name="emailresponsave"
-											label="E-mail do Responsável Técnico"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</div>
-									<Address
-										title="Endereço do Responsável Técnico"
-										cep="cepresponsavel"
-										tipoLogradouro="auxlogradourtec"
-										logradouro="enderecorespons"
-										numero="numenderecoresp"
-										complemento="complementoresp"
-										bairro="bairroresponsav"
-										cidade="municipiorespon"
-										uf="ufresponsavel"
-										pais="paisresponsavel"
-										isSubmit={isSubmit}
-										setIsSubmit={setIsSubmit}
-									/>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Contratante
-									</legend>
-									<fieldset className="border p-4 rounded w-full mb-4">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Denominação da Contratante
-										</legend>
-										<Input
-											name="denominacontrat"
-											label="Razão Social"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</fieldset>
-									<div className=" grid grid-cols-1 md:grid-cols-2 items-center gap-2">
-										<Input
-											name="cnpjcontratante"
-											label="CNPJ da Contratante"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											name="registronocrea"
-											label="Registro no CREA"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</div>
-									<Address
-										title="Endereço da Contratante"
-										cep="cep"
-										tipoLogradouro="auxlogradcontra"
-										logradouro="enderecocontrat"
-										numero="numenderecontra"
-										complemento="complementocont"
-										bairro="bairrocontratan"
-										cidade="municipiocontra"
-										uf="ufcontratante"
-										pais="paiscontratante"
-										isSubmit={isSubmit}
-										setIsSubmit={setIsSubmit}
-									/>
-									<fieldset className="border p-4 rounded w-full my-2">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Tipo de Coordenada
-										</legend>
-										<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 border p-4 rounded w-full mb-4">
-											<Radio
-												options={coordenadaOptions}
-												name="rbtipocoordenad"
-												className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
-											/>
-										</div>
-										<div className="grid grid-cols-1 md:grid-cols-2 items-center gap-2">
-											<Input
-												name="latitude"
-												label="Latitude"
-												className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-											/>
-											<Input
-												name="longitude"
-												label="Longitude"
-												className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-											/>
-										</div>
-									</fieldset>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Tipo de Contratante
-									</legend>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2 ">
-										<Radio
-											options={contratanteOptions}
-											name="rbcontratante"
-											className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
-										/>
-									</div>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Vínculo Contratual
-									</legend>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 border p-4 rounded w-full mb-4">
-										<Radio
-											options={vinculocontratualOptions}
-											name="vinculocontratu"
-											className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
-										/>
-									</div>
-									<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
-										<Input
-											name="auxdescentraliz"
-											label="Descentralizada"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										{/* <Input
-											name="outros"
-											label="Outros"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/> */}
-										<Input
-											name="auxcentralizada"
-											label="Centralizada"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</div>
-									<Address
-										title="Endereço da Unidade Administrativa"
-										cep="cepunidadeadm"
-										tipoLogradouro="auxlograundadm"
-										logradouro="enderecounidadm"
-										numero="numenderecoadm"
-										complemento="complementounid"
-										bairro="bairrounidadadm"
-										cidade="municipiounidad"
-										isSubmit={isSubmit}
-										setIsSubmit={setIsSubmit}
-									/>
-									<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
-										<Input
-											type="date"
-											name="iniciovinculoco"
-											label="Data de Início"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											type="date"
-											name="terminovinculo"
-											label="Previsão de Término"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											name="auxtipovinculo"
-											label="Tipo de Vínculo"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</div>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
-										<Input
-											name="auxdesignacao"
-											label="Designação do Cargo"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										{/* <Input
-											name="Mudar"
-											label="Cargo ou Função fora da Lista"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/> */}
-									</div>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full my-2">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Atividade Técnica
-									</legend>
-									<Select name="atividadeprofis" label="Atividade Profissional">
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
+									<Select
+										name="auxdesecargotec"
+										label="Desempenho de Cargo Técnico"
+									>
 										{atividadeProfissionalOptions.map((option) => (
 											<option key={option.value} value={option.value}>
 												{option.label}
 											</option>
 										))}
 									</Select>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
-										<Select
-											name="auxdesecargotec"
-											label="Desempenho de Cargo Técnico"
-										>
-											{atividadeProfissionalOptions.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</Select>
-										<Select
-											name="auxdesefuncaote"
-											label="Desempenho de Função Técnica"
-										>
-											{atividadeProfissionalOptions.map((option) => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</Select>
-									</div>
-									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
-										<Input
-											name="quantidadatvtec"
-											label="Quantidade"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-										<Input
-											name="auxunidade"
-											label="Unidade"
-											className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
-										/>
-									</div>
-									<Textarea name="observacoes" label="Observações" />
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full my-2">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Anexar Documentos
-									</legend>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full my-2">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Ação Intitucional (Convênio)
-									</legend>
+									<Select
+										name="auxdesefuncaote"
+										label="Desempenho de Função Técnica"
+									>
+										{atividadeProfissionalOptions.map((option) => (
+											<option key={option.value} value={option.value}>
+												{option.label}
+											</option>
+										))}
+									</Select>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
 									<Input
-										name="acaoinstitucion"
-										label=""
+										name="quantidadatvtec"
+										label="Quantidade"
 										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 									/>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full my-2">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Entidade de Classe
-									</legend>
 									<Input
-										name="auxentidadeclas"
-										label=""
+										name="auxunidade"
+										label="Unidade"
 										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 									/>
+								</div>
+								<Textarea name="observacoes" label="Observações" />
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full my-2">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Anexar Documentos
+								</legend>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full my-2">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Ação Intitucional (Convênio)
+								</legend>
+								<Input
+									name="acaoinstitucion"
+									label=""
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full my-2">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Entidade de Classe
+								</legend>
+								<Input
+									name="auxentidadeclas"
+									label=""
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full my-2">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Informações
+								</legend>
+								<fieldset className="border p-4 rounded w-full my-2">
+									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+										Observações Gerais
+									</legend>
+									<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
+										<section className="col-span-2 w-full">
+											<ol className="grid gap-2 text-[12px] text-white list-decimal list-inside w-full">
+												<li className="leading-normal">
+													A ART é válida somente quando quitada, mediante
+													apresentação do comprovante do pagamento ou
+													conferência no site do Crea.
+												</li>
+												<li className="leading-normal">
+													A autenticidade deste documento pode ser verificada no
+													www.crea-xx.org.br ou www.confea.org.br.
+												</li>
+												<li className="leading-normal">
+													A guarda da via assinada da ART será de
+													responsabilidade do profissional e do contratante, com
+													o objetivo de documentar o vínculo contratual.
+												</li>
+											</ol>
+										</section>
+									</div>
 								</fieldset>
 								<fieldset className="border p-4 rounded w-full my-2">
 									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Informações
+										Atenção
 									</legend>
-									<fieldset className="border p-4 rounded w-full my-2">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Observações Gerais
-										</legend>
-										<div className="grid grid-cols-1 md:grid-cols-2 items-center justify-center gap-2 mb-2">
-											<section className="col-span-2 w-full">
-												<ol className="grid gap-2 text-[12px] text-white list-decimal list-inside w-full">
-													<li className="leading-normal">
-														A ART é válida somente quando quitada, mediante
-														apresentação do comprovante do pagamento ou
-														conferência no site do Crea.
-													</li>
-													<li className="leading-normal">
-														A autenticidade deste documento pode ser verificada
-														no www.crea-xx.org.br ou www.confea.org.br.
-													</li>
-													<li className="leading-normal">
-														A guarda da via assinada da ART será de
-														responsabilidade do profissional e do contratante,
-														com o objetivo de documentar o vínculo contratual.
-													</li>
-												</ol>
-											</section>
-										</div>
-									</fieldset>
-									<fieldset className="border p-4 rounded w-full my-2">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Atenção
-										</legend>
-										<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
-											<section className="h-full mx-auto">
-												<Image
-													src={warningImg}
-													width={100}
-													height={100}
-													alt=""
-												/>
-											</section>
-											<section className="col-span-2 w-full">
-												<ol className="grid gap-2 text-[12px] text-white list-decimal list-inside">
-													<li className="leading-normal">
-														ESTA ART PODERÁ SER AVALIADA POSTERIORMENTE À SUA
-														LIBERAÇÃO. CASO SE VERIFIQUE INCOMPATIBILIDADE ENTRE
-														AS ATIVIDADES DESENVOLVIDAS E AS ATRIBUIÇÕES
-														PROFISSIONAIS, A ART SERÁ ENCAMINHADA A CÂMARA
-														ESPECIALIZADA DA MODALIDADE PROFISSIONAL
-														CORRESPONDENTE PARA POSICIONAMENTO QUANTO A SUA
-														VALIDADE.
-													</li>
-													<li className="leading-normal">
-														COMPETE AO CREA, SEMPRE QUE NECESSÁRIO, AVERIGUAR AS
-														INFORMAÇÕES APRESENTADAS E ADOTAR AS PROVIDÊNCIAS
-														NECESSÁRIAS AO CASO, CONFORME ARTIGO 71 DA RESOLUÇÃO
-														Nº 1.025/2009, DO CONFEA;
-													</li>
-													<li className="leading-normal">
-														ESTA ART PODERÁ SER ANULADA, COM BASE NOS INCISOS I
-														A VI DO ARTIGO 25 DA RESOLUÇÃO Nº 1.025/2009, DO
-														CONFEA: ({" "}
-														<Link
-															href={
-																"https://normativos.confea.org.br/Ementas/Visualizar?id=43481"
-															}
-														/>{" "}
-														).
-													</li>
-													<li className="leading-normal">
-														ERROS NO PREENCHIMENTO PODERÃO PROVOCAR A
-														NECESSIDADE DE SUBSTITUIÇÃO DE ARTS PARA CORREÇÃO DE
-														INFORMAÇÕES.
-													</li>
-													<li className="leading-normal">
-														AS ARTS DE SUBSTITUIÇÃO BEM COMO AS ARTS NULAS PODEM
-														ENSEJAR A NECESSIDADE DE NOVAS ARTS COM NOVOS
-														CUSTOS, DE ACORDO COM O DISPOSTO NA RESOLUÇÃO Nº
-														1.025/09, DO CONFEA;
-													</li>
-													<li>
-														ATIVIDADES ANOTADAS QUE NÃO SEJAM DE ATRIBUIÇÃO DO
-														PROFISSIONAL CONFIGURA EXERCÍCIO ILEGAL DA
-														PROFISSÃO, CONFORME O ARTIGO 6º DA LEI Nº 5.194/66;
-													</li>
-												</ol>
-											</section>
-										</div>
-									</fieldset>
-								</fieldset>
-								<fieldset className="border p-4 rounded w-full mb-4">
-									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-										Declarações
-									</legend>
-									<fieldset className="border p-4 rounded w-full mb-4">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Acessibilidade
-										</legend>
-										<div>
-											<p className="text-white mb-2">
-												Declara a aplicabilidade das regras de acessibilidade
-												previstas nas normas técnicas da ABNT, na legislação
-												específica e no Decreto nº 5.296, de 2 de dezembro de
-												2004, às atividades profissionais acima relacionadas,
-												conforme as seguintes opções:
-											</p>
-											<div className="mt-2">
-												<Radio
-													options={declaracaoAcessibilidadeOptions}
-													name="declaraacessibi"
-													className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
-												/>
-											</div>
-										</div>
-									</fieldset>
-									<div className="my-3">
-										<Checkbox
-											name="cbdeclararegras"
-											value="1"
-											label="Declaro que estou cumprindo as regras de acessibilidade previstas nas normas técnicas da ABNT, na legislação específica e no decreto nº 5296/2004"
-										/>
-									</div>
-									<fieldset className="border p-4 rounded w-full mb-4">
-										<legend className="text-lg font-medium leading-6 text-white dark:text-white">
-											Termo
-										</legend>
-										<div>
-											<p className="text-white mb-2">
-												A CONTINUIDADE DA ELABORAÇÃO DESTA ART ESTÁ CONDICIONADA
-												À CIÊNCIA E CONCORDÂNCIA DASSEGUINTES OBSERVAÇÕES
-												IMPORTANTES SEGUNDO AS LEGISLAÇÕES PERTINENTES,
-												DESTACADAS PARAO BENEFÍCIO DAS PESSOAS FÍSICAS E
-												JURÍDICAS AFETAS AO SISTEMA CONFEA/CREA:
-											</p>
+									<div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center gap-2 mb-2">
+										<section className="h-full mx-auto">
+											<Image src={warningImg} width={100} height={100} alt="" />
+										</section>
+										<section className="col-span-2 w-full">
 											<ol className="grid gap-2 text-[12px] text-white list-decimal list-inside">
 												<li className="leading-normal">
-													TODAS AS ATIVIDADES ANOTADAS NESTA ART SÃO COMPATÍVEIS
-													COM MINHAS ATRIBUIÇÕES PROFISSIONAIS, SEGUNDO A LEI Nº
-													5.194/1966 E DEMAIS NORMATIVOS LEGAIS ESPECÍFICOS DA
-													MINHA PROFISSÃO.
+													ESTA ART PODERÁ SER AVALIADA POSTERIORMENTE À SUA
+													LIBERAÇÃO. CASO SE VERIFIQUE INCOMPATIBILIDADE ENTRE
+													AS ATIVIDADES DESENVOLVIDAS E AS ATRIBUIÇÕES
+													PROFISSIONAIS, A ART SERÁ ENCAMINHADA A CÂMARA
+													ESPECIALIZADA DA MODALIDADE PROFISSIONAL
+													CORRESPONDENTE PARA POSICIONAMENTO QUANTO A SUA
+													VALIDADE.
 												</li>
 												<li className="leading-normal">
-													O PROFISSIONAL DECLARA PARA OS DEVIDOS FINS QUE AS
-													INFORMAÇÕES CONTIDAS NESSA ART SÃO VERDADEIRAS SOB
-													PENA DE RESPONSABILIDADE CRIMINAL (ARTIGO 299 DO
-													CÓDIGO PENAL BRASILEIRO), ÉTICO-PROFISSIONAL, CÍVEL E
-													TRABALHISTA.
+													COMPETE AO CREA, SEMPRE QUE NECESSÁRIO, AVERIGUAR AS
+													INFORMAÇÕES APRESENTADAS E ADOTAR AS PROVIDÊNCIAS
+													NECESSÁRIAS AO CASO, CONFORME ARTIGO 71 DA RESOLUÇÃO
+													Nº 1.025/2009, DO CONFEA;
 												</li>
-												<Checkbox
-													name="declaracaotermo"
-													value="1"
-													label="DECLARO QUE TENHO CIÊNCIA DOS TERMOS LEGAIS DESTACADOS ACIMA!"
-												/>
+												<li className="leading-normal">
+													ESTA ART PODERÁ SER ANULADA, COM BASE NOS INCISOS I A
+													VI DO ARTIGO 25 DA RESOLUÇÃO Nº 1.025/2009, DO CONFEA:
+													({" "}
+													<Link
+														href={
+															"https://normativos.confea.org.br/Ementas/Visualizar?id=43481"
+														}
+													/>{" "}
+													).
+												</li>
+												<li className="leading-normal">
+													ERROS NO PREENCHIMENTO PODERÃO PROVOCAR A NECESSIDADE
+													DE SUBSTITUIÇÃO DE ARTS PARA CORREÇÃO DE INFORMAÇÕES.
+												</li>
+												<li className="leading-normal">
+													AS ARTS DE SUBSTITUIÇÃO BEM COMO AS ARTS NULAS PODEM
+													ENSEJAR A NECESSIDADE DE NOVAS ARTS COM NOVOS CUSTOS,
+													DE ACORDO COM O DISPOSTO NA RESOLUÇÃO Nº 1.025/09, DO
+													CONFEA;
+												</li>
+												<li>
+													ATIVIDADES ANOTADAS QUE NÃO SEJAM DE ATRIBUIÇÃO DO
+													PROFISSIONAL CONFIGURA EXERCÍCIO ILEGAL DA PROFISSÃO,
+													CONFORME O ARTIGO 6º DA LEI Nº 5.194/66;
+												</li>
 											</ol>
-										</div>
-									</fieldset>
+										</section>
+									</div>
 								</fieldset>
-								<ButtonSubmit
-									title="Enviar"
-									onClick={() => setIsLoading(!isLoading)}
-								/>
-							</Form>
-						</div>
+							</fieldset>
+							<fieldset className="border p-4 rounded w-full mb-4">
+								<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+									Declarações
+								</legend>
+								<fieldset className="border p-4 rounded w-full mb-4">
+									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+										Acessibilidade
+									</legend>
+									<div>
+										<p className="text-white mb-2">
+											Declara a aplicabilidade das regras de acessibilidade
+											previstas nas normas técnicas da ABNT, na legislação
+											específica e no Decreto nº 5.296, de 2 de dezembro de
+											2004, às atividades profissionais acima relacionadas,
+											conforme as seguintes opções:
+										</p>
+										<div className="mt-2">
+											<Radio
+												options={declaracaoAcessibilidadeOptions}
+												name="declaraacessibi"
+												className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+											/>
+										</div>
+									</div>
+								</fieldset>
+								<div className="my-3">
+									<Checkbox
+										name="cbdeclararegras"
+										value="1"
+										label="Declaro que estou cumprindo as regras de acessibilidade previstas nas normas técnicas da ABNT, na legislação específica e no decreto nº 5296/2004"
+									/>
+								</div>
+								<fieldset className="border p-4 rounded w-full mb-4">
+									<legend className="text-lg font-medium leading-6 text-white dark:text-white">
+										Termo
+									</legend>
+									<div>
+										<p className="text-white mb-2">
+											A CONTINUIDADE DA ELABORAÇÃO DESTA ART ESTÁ CONDICIONADA À
+											CIÊNCIA E CONCORDÂNCIA DASSEGUINTES OBSERVAÇÕES
+											IMPORTANTES SEGUNDO AS LEGISLAÇÕES PERTINENTES, DESTACADAS
+											PARAO BENEFÍCIO DAS PESSOAS FÍSICAS E JURÍDICAS AFETAS AO
+											SISTEMA CONFEA/CREA:
+										</p>
+										<ol className="grid gap-2 text-[12px] text-white list-decimal list-inside">
+											<li className="leading-normal">
+												TODAS AS ATIVIDADES ANOTADAS NESTA ART SÃO COMPATÍVEIS
+												COM MINHAS ATRIBUIÇÕES PROFISSIONAIS, SEGUNDO A LEI Nº
+												5.194/1966 E DEMAIS NORMATIVOS LEGAIS ESPECÍFICOS DA
+												MINHA PROFISSÃO.
+											</li>
+											<li className="leading-normal">
+												O PROFISSIONAL DECLARA PARA OS DEVIDOS FINS QUE AS
+												INFORMAÇÕES CONTIDAS NESSA ART SÃO VERDADEIRAS SOB PENA
+												DE RESPONSABILIDADE CRIMINAL (ARTIGO 299 DO CÓDIGO PENAL
+												BRASILEIRO), ÉTICO-PROFISSIONAL, CÍVEL E TRABALHISTA.
+											</li>
+											<Checkbox
+												name="declaracaotermo"
+												value="1"
+												label="DECLARO QUE TENHO CIÊNCIA DOS TERMOS LEGAIS DESTACADOS ACIMA!"
+											/>
+										</ol>
+									</div>
+								</fieldset>
+							</fieldset>
+							<ButtonSubmit
+								title="Enviar"
+								onClick={() => setIsLoading(!isLoading)}
+							/>
+						</Form>
 					</div>
 				</div>
-				<footer className="flex flex-col py-2 justify-center items-center text-white bg-blue-800">
-					<p className="text-center">
-						Conselho Regional de Engenharia e Agronomia de Pernambuco - Avbenida
-						Agamenón Magalhães 2978, Espinheiro, Recife, PE
-					</p>
-					<p className="text-center">
-						Sistema de Informações Técnicas e Administrativas do CREA-PE
-					</p>
-				</footer>
-			</main>
+			</div>
+			<footer className="flex flex-col py-2 justify-center items-center text-white bg-blue-800">
+				<p className="text-center">
+					Conselho Regional de Engenharia e Agronomia de Pernambuco - Avenida
+					Agamenón Magalhães 2978, Espinheiro, Recife, PE
+				</p>
+				<p className="text-center">
+					Sistema de Informações Técnicas e Administrativas do CREA-PE
+				</p>
+			</footer>
 		</>
 	);
 }
