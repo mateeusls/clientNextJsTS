@@ -252,6 +252,7 @@ function RegistroProfissional() {
 				<title>Registro Profissional | Registros | CREA</title>
 			</Head>
 			<Sidebar />
+			{base64 && <p>{base64}</p>}
 			<div className="py-4 px-2">
 				<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
 					<div className="bg-yellow-600 w-full p-7 md:py-7 rounded-t">
