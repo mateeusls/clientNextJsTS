@@ -1,6 +1,7 @@
 import { Address } from "@/components/Address";
 import ButtonSubmit from "@/components/ButtonSubmit";
 import { Checkbox } from "@/components/Form/Checkbox";
+import File from "@/components/Form/File";
 import FileImage from "@/components/Form/FileImage";
 import { Input } from "@/components/Form/Input";
 import InputMask from "@/components/Form/InputMask";
@@ -18,18 +19,30 @@ import {
 import Sidebar from "@/components/Sidebar";
 import { TitleList } from "@/components/TitleList";
 import { AuthContext } from "@/contexts/AuthContext";
-import { handleFileChange, handlePreview } from "@/lib/utils";
+import { getBase64, handlePreview } from "@/lib/utils";
 import { FormHandles, SubmitHandler } from "@unform/core";
 import { Form } from "@unform/web";
 import axios, { AxiosResponse } from "axios";
 import Head from "next/head";
 import { memo, useContext, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 interface Inputs {
 	lstitulos: string;
-	fotoprofissiona?: string;
+	fotoprofissiona?: File;
+	anxdiplomactf?: File;
+	anxcargahoraria?: File;
+	anxdiplomadout?: File;
+	anxidentidade?: File;
+	anxcpf?: File;
+	anxtituloeleito?: File;
+	anxjusticaeleit?: File;
+	anxcompendereco?: File;
+	anxservmilitar?: File;
+	anxtiposangue?: File;
+	anxnispispasep?: File;
+	anxassinatura?: File;
+
 	auxcidnaturalid: string;
 	auxdiplomado: string;
 	auxestadcivil: string;
@@ -108,133 +121,59 @@ function RegistroProfissional() {
 	const [tipeRegister, setTipeRegister] = useState<string | null>(null);
 	const [isSubmit, setIsSubmit] = useState<boolean>(false);
 	const formRef = useRef<FormHandles>(null);
-	const [file, setFile] = useState<File | null>(null);
 	const [base64, setBase64] = useState<string>("");
 	const [preview, setPreview] = useState<string | null>(null);
+	const [selectedFiles, setSelectedFiles] = useState<object[]>([]);
+
+	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files && e.target.files[0];
+		const input = e.target.name;
+		const obj = {
+			EntityAttributeID: input,
+			FileName: file.name,
+			FileContent: (await getBase64(file)).split(",")[1],
+		};
+		if (file) {
+			setSelectedFiles((prevFiles) => [...prevFiles, obj]);
+		}
+		setBase64(obj.FileContent);
+	};
 
 	const handleSubmit: SubmitHandler<Inputs> = async (
 		data: Inputs,
 		{ reset }
 	) => {
 		try {
-			// Remove all previous errors
-			formRef.current?.setErrors({});
-			const schema = Yup.object().shape({
-				auxcidnaturalid: Yup.string(),
-				auxestadcivil: Yup.string(),
-				auxfatorrh: Yup.string(),
-				auxgenero: Yup.string(),
-				auxlogradreside: Yup.string(),
-				auxlograscomerc: Yup.string(),
-				auxmunicieleito: Yup.string(),
-				auxnecesespecia: Yup.string(),
-				auxorgexpedidor: Yup.string(),
-				auxtiposanguine: Yup.string(),
-				auxtpregistro: Yup.string(),
-				auxufeleitoral: Yup.string(),
-				auxufexpedidor: Yup.string(),
-				auxufnaturalid: Yup.string(),
-				bairrocomercial: Yup.string(),
-				bairroresidenc: Yup.string(),
-				cbinfoverdade: Yup.string(),
-				cbmsmendereco: Yup.string(),
-				cbregistromae: Yup.string(),
-				cbregistropai: Yup.string(),
-				cbsolregcrea: Yup.string(),
-				celular: Yup.string(),
-				cepcomercial: Yup.string(),
-				cepresidencial: Yup.string(),
-				cidadecomercial: Yup.string(),
-				cidaderesidenc: Yup.string(),
-				complcomercial: Yup.string(),
-				complresidencia: Yup.string(),
-				cpfprofissional: Yup.string(),
-				dataexpedicao: Yup.date()
-					.typeError("Data inválida")
-					.nullable()
-					.transform((curr, orig) => (orig === "" ? null : curr)),
-				datanascimento: Yup.date()
-					.typeError("Data inválida")
-					.nullable()
-					.transform((curr, orig) => (orig === "" ? null : curr)),
-				datasolicitacao: Yup.date()
-					.typeError("Data inválida")
-					.nullable()
-					.transform((curr, orig) => (orig === "" ? null : curr)),
-				homepage: Yup.string(),
-				identidadeprof: Yup.string(),
-				logradourocomer: Yup.string(),
-				logradouroresid: Yup.string(),
-				nispispasep: Yup.string(),
-				nomemae: Yup.string(),
-				nomepai: Yup.string(),
-				nomeprofissiona: Yup.string(),
-				nomesocial: Yup.string(),
-				numcomercial: Yup.string(),
-				numresidencial: Yup.string(),
-				numtituloeleito: Yup.string(),
-				orgaoexpoutros: Yup.string(),
-				outrasnecessid: Yup.string(),
-				outroscontatos: Yup.string(),
-				pntrefcomercial: Yup.string(),
-				pntrefresidenc: Yup.string(),
-				rbdiplomacia: Yup.string(),
-				secaoeleitoral: Yup.string(),
-				telcomercial: Yup.string(),
-				telresidencial: Yup.string(),
-				ufcomercial: Yup.string(),
-				ufresidencial: Yup.string(),
-				zonaeleitoral: Yup.string(),
-			});
-
-			await schema.validate(data, {
-				// Validation all fields and return all errors
-				abortEarly: false,
-			});
-
-			// Validation passed,
-
 			delete data.fotoprofissiona;
-			const foto = base64.split(",")[1];
-			const instance = await axios.post<AxiosResponse | any>(
-				"/api/sesuite/editdata",
-				{
+			delete data.anxdiplomactf;
+			delete data.anxcargahoraria;
+			delete data.anxdiplomadout;
+			delete data.anxidentidade;
+			delete data.anxcpf;
+			delete data.anxtituloeleito;
+			delete data.anxjusticaeleit;
+			delete data.anxcompendereco;
+			delete data.anxservmilitar;
+			delete data.anxtiposangue;
+			delete data.anxnispispasep;
+			delete data.anxassinatura;
+
+			console.log(data);
+			console.log(selectedFiles);
+			await axios
+				.post<AxiosResponse | any>("/api/sesuite/editdata", {
 					processid: "mpp01-prc-regprofissional",
 					wftitle: data.nomeprofissiona + " - " + data.cpfprofissional,
 					entityid: "registroprof",
 					attributelist: data,
-					filelist: [
-						{
-							EntityAttributeID: "fotoprofissiona",
-							FileName: file.name,
-							FileContent: foto,
-						},
-					],
-				}
-			);
-
-			console.log(instance.data);
-
-			axios.post<AxiosResponse | any>("/api/sesuite/executeactivity", {
-				wfid: instance.data.RecordID,
-				activityid: "RP-ATIV-001",
-				ActionSequence: "3",
-			});
-
-			if (instance.data.Status === "SUCCESS") {
-				toast.success(instance.data.Detail);
-			}
-
-			// if (activity.Status === "FAILURE") {
-			// 	toast.error(activity.Detail);
-			// }
-
-			// if (response.status === 200) {
-			// 	toast.success("Cadastro realizado com sucesso!");
-			// 	setIsSubmit(true);
-
-			// 	// Router.push("/services/register");
-			// }
+					filelist: selectedFiles,
+				})
+				.then((response) => {
+					console.log(response);
+				})
+				.catch((error) => {
+					console.log(error.response);
+				});
 		} catch (err) {
 			const validationErrors = {};
 			if (err instanceof Yup.ValidationError) {
@@ -252,7 +191,6 @@ function RegistroProfissional() {
 				<title>Registro Profissional | Registros | CREA</title>
 			</Head>
 			<Sidebar />
-			{base64 && <p>{base64}</p>}
 			<div className="py-4 px-2">
 				<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
 					<div className="bg-yellow-600 w-full p-7 md:py-7 rounded-t">
@@ -273,7 +211,7 @@ function RegistroProfissional() {
 											title="Foto 3x4 - Com fundo branco e roupa escura (File em JPEG ou PNG)"
 											name="fotoprofissiona"
 											onChange={(e) => {
-												handleFileChange(e, setFile, setBase64);
+												handleFileChange(e);
 												handlePreview(e, setPreview);
 											}}
 											preview={preview}
@@ -605,6 +543,100 @@ function RegistroProfissional() {
 								setIsSubmit={setIsSubmit}
 							/>
 							<TitleList />
+							<fieldset className="border p-4 rounded w-full mt-4">
+								<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+									Anexar Documentos
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									<File
+										name="anxdiplomactf"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Diploma, certificado ou declaração de conclusão do curso, registrado pelo órgão competente do Sistema de Ensino"
+									/>
+									<File
+										name="anxcargahoraria"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Histórico com indicação de cargas horárias das disciplinas cursadas"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									<File
+										name="anxidentidade"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Documento oficial de identidade"
+									/>
+									<File
+										name="anxcpf"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="CPF"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									<File
+										name="anxtituloeleito"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Título de eleitor"
+									/>
+									<File
+										name="anxjusticaeleit"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Prova de quitação com a Justiça Eleitoral"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									<File
+										name="anxcompendereco"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Comprovante ou declaração de endereço"
+									/>
+									<File
+										name="anxservmilitar"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Prova de quitação com o Serviço Militar (reservista)"
+									/>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+									<File
+										name="anxtiposangue"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Original ou cópia autenticada do exame laboratorial de tipagem sanguínea ou carteira de doador"
+									/>
+									<File
+										name="anxnispispasep"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="NIS (PIS/PASEP)"
+									/>
+								</div>
+								<div className="">
+									<File
+										name="anxassinatura"
+										onChange={(e) => {
+											handleFileChange(e);
+										}}
+										label="Assinatura Digitalizada"
+									/>
+								</div>
+							</fieldset>
 							<fieldset className="border p-4 rounded w-full mt-4">
 								<legend className="text-sm font-medium leading-6 text-white dark:text-white">
 									Confirmação de Solicitação

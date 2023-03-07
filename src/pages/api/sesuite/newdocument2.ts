@@ -8,8 +8,6 @@ export default async function NewDocument2Page(
 	const { categoryId, documentId, title, files } = req.body;
 	const { method } = req;
 
-	console.log(req.body);
-
 	if (method === "POST") {
 		try {
 			const response = await NewDocument2({
@@ -18,6 +16,7 @@ export default async function NewDocument2Page(
 				title,
 				files: files || [],
 			});
+
 			return res.json(response);
 		} catch (error) {
 			return res.json(error);

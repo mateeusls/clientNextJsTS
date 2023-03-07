@@ -1,6 +1,14 @@
 import { NewWorkflowEditData } from "@/services/MethodSe/WorkFlow/NewWorkflowEditData";
 import { NextApiRequest, NextApiResponse } from "next";
 
+export const config = {
+	api: {
+		bodyParser: {
+			sizeLimit: "8mb",
+		},
+	},
+};
+
 export default async function DataSetPage(
 	req: NextApiRequest,
 	res: NextApiResponse

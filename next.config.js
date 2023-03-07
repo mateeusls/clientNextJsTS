@@ -5,11 +5,6 @@ const nextConfig = {
 	compiler: {
 		removeConsole: process.env.NODE_ENV !== "development",
 	},
-	api: {
-		bodyParser: {
-			sizeLimit: "10mb",
-		},
-	},
 };
 
 const withPWA = require("next-pwa")({

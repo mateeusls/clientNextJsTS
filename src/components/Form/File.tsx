@@ -4,10 +4,11 @@ import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 interface Props {
 	name: string;
 	show?: boolean;
+	label?: string;
 }
 type InputProps = JSX.IntrinsicElements["input"] & Props;
 
-export default function File({ name, show, ...rest }: InputProps) {
+export default function File({ name, show, label, ...rest }: InputProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { fieldName, registerField, defaultValue, error } = useField(name);
 	const [preview, setPreview] = useState(defaultValue);
@@ -37,15 +38,11 @@ export default function File({ name, show, ...rest }: InputProps) {
 	}, [fieldName, registerField]);
 
 	return (
-		<>
-			{show && preview && <img src={preview} alt="Preview" width="100" />}
-			<input
-				type="file"
-				name={name}
-				ref={inputRef}
-				onChange={handlePreview}
-				{...rest}
-			/>
-		</>
+		<div>
+			{label && (
+				<p className="text-sm text-white dark:text-white mb-2">{label}</p>
+			)}
+			<input type="file" name={name} ref={inputRef} {...rest} />
+		</div>
 	);
 }
