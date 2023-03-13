@@ -42,7 +42,13 @@ export default function File({ name, show, label, ...rest }: InputProps) {
 			{label && (
 				<p className="text-sm text-white dark:text-white mb-2">{label}</p>
 			)}
-			<input type="file" name={name} ref={inputRef} {...rest} />
+			<input
+				className="w-60 md:w-full"
+				type="file"
+				name={name}
+				ref={inputRef}
+				{...rest}
+			/>
 		</div>
 	);
 }

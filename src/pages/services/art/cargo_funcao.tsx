@@ -204,6 +204,7 @@ export default function CargoFuncao() {
 
 					if (instance.Status === "FAILURE") {
 						toast.error(instance.Detail);
+						setIsLoading(false);
 					}
 
 					// if (activity.Status === "FAILURE") {
@@ -212,7 +213,7 @@ export default function CargoFuncao() {
 
 					if (response.status === 200) {
 						toast.success("Cadastro realizado com sucesso!");
-						setIsSubmit(true);
+						setIsSubmit(false);
 
 						router.push("/services/art");
 					}

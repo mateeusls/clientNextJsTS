@@ -4,7 +4,7 @@ interface NewChildEntityRecordProps {
 	wfid: string;
 	mainentityid: string;
 	childrelationshipid: string;
-	attributelist: object;
+	attributelist: object[];
 }
 
 export async function NewChildEntityRecord({
@@ -16,10 +16,10 @@ export async function NewChildEntityRecord({
 	const client = await ClientSoap("wf_ws");
 
 	const arr = [];
-	for (const i in attributelist) {
+	for (const item in attributelist) {
 		arr.push({
-			EntityAttributeID: `${i}`,
-			EntityAttributeValue: `${attributelist[i]}`,
+			EntityAttributeID: item,
+			EntityAttributeValue: attributelist[item],
 		});
 	}
 

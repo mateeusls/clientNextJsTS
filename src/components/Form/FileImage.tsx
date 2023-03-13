@@ -8,6 +8,7 @@ interface Props {
 	title?: string;
 	preview?: string;
 	setPreview?: (value: string) => void;
+	setSelectedFile?: (value: []) => void;
 }
 type InputProps = JSX.IntrinsicElements["input"] & Props;
 
@@ -17,6 +18,7 @@ export default function FileImage({
 	title,
 	preview,
 	setPreview,
+	setSelectedFile,
 	...rest
 }: InputProps) {
 	const localRef = useRef<HTMLInputElement>(null);
@@ -61,7 +63,10 @@ export default function FileImage({
 						/>
 						<button
 							className="absolute top-2 right-2 rounded-full flex items-center justify-center"
-							onClick={() => setPreview(defaultValue)}
+							onClick={() => {
+								setPreview(defaultValue);
+								setSelectedFile([]);
+							}}
 						>
 							<XCircle size={24} color="red" />
 						</button>

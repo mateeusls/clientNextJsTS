@@ -8,13 +8,17 @@ import InputMask from "@/components/Form/InputMask";
 import { Radio } from "@/components/Form/Radio";
 import { Select } from "@/components/Form/Select";
 import { Textarea } from "@/components/Form/TextArea";
+import Modal from "@/components/Modal";
 import {
 	rbdiplomaciaOptions,
+	rbDiplomadoOptions,
+	rbTituloPrincipal,
 	selectOptionsBrasil,
 	selectOptionsDoadorOrgaos,
 	selectOptionsExterior,
 	selectOptionsGenero,
-	selectOptionsUfExpedicao,
+	selectOptionsPais,
+	selectOptionsUf,
 } from "@/components/OptionsForm/RegistroProfissional";
 import Sidebar from "@/components/Sidebar";
 import { TitleList } from "@/components/TitleList";
@@ -24,7 +28,9 @@ import { FormHandles, SubmitHandler } from "@unform/core";
 import { Form } from "@unform/web";
 import axios, { AxiosResponse } from "axios";
 import Head from "next/head";
+import Router from "next/router";
 import { memo, useContext, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 interface Inputs {
@@ -116,14 +122,72 @@ interface Inputs {
 	zonaeleitoral: string;
 }
 
+export type ModalDataProps = {
+	id: number;
+	abreviatura: string;
+	auxcnpj: string;
+	auxcurso: string;
+	auxdiplomado: string;
+	auxinstituicao: string;
+	auxtituloprinc: string;
+	auxtpcertificac: string;
+	auxtpregistro: string;
+	auxuf: string;
+	cboutros: string;
+	cddocumento: string;
+	cnpjinstituicao: string;
+	contadordoc: string;
+	cursoexterior: string;
+	cursooutros: string;
+	datacolacaograu: Date;
+	datadiploma: Date;
+	dataentrada: Date;
+	dataformacao: Date;
+	dtfinaltitprovi: Date;
+	estadocnpj: string;
+	iddocumento: string;
+	idprocesso: string;
+	instituicaoext: string;
+	municipiocnpj: string;
+	nivelcurso: string;
+	nomefantasia: string;
+	numerocertifica: string;
+	observacao: string;
+	razaosocial: string;
+	rbdiplomado: string;
+	rbtituloprincip: string;
+	tituloprofissio: string;
+};
+
 function RegistroProfissional() {
 	const { user } = useContext(AuthContext);
 	const [tipeRegister, setTipeRegister] = useState<string | null>(null);
 	const [isSubmit, setIsSubmit] = useState<boolean>(false);
 	const formRef = useRef<FormHandles>(null);
-	const [base64, setBase64] = useState<string>("");
 	const [preview, setPreview] = useState<string | null>(null);
 	const [selectedFiles, setSelectedFiles] = useState<object[]>([]);
+	const [modalDataList, setModalDataList] = useState<ModalDataProps[]>([]);
+	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+	const modalData: SubmitHandler<ModalDataProps> = async (
+		data: ModalDataProps,
+		{ reset }
+	) => {
+		try {
+			if (data) {
+				setModalDataList((prevFiles) => [...prevFiles, data]);
+			}
+			setIsOpenModal(false);
+		} catch (err) {
+			const validationErrors = {};
+			if (err instanceof Yup.ValidationError) {
+				err.inner.forEach((error) => {
+					validationErrors[error.path] = error.message;
+				});
+				formRef.current?.setErrors(validationErrors);
+			}
+		}
+	};
 
 	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files && e.target.files[0];
@@ -136,7 +200,6 @@ function RegistroProfissional() {
 		if (file) {
 			setSelectedFiles((prevFiles) => [...prevFiles, obj]);
 		}
-		setBase64(obj.FileContent);
 	};
 
 	const handleSubmit: SubmitHandler<Inputs> = async (
@@ -157,9 +220,7 @@ function RegistroProfissional() {
 			delete data.anxtiposangue;
 			delete data.anxnispispasep;
 			delete data.anxassinatura;
-
-			console.log(data);
-			console.log(selectedFiles);
+			console.log(modalDataList);
 			await axios
 				.post<AxiosResponse | any>("/api/sesuite/editdata", {
 					processid: "mpp01-prc-regprofissional",
@@ -168,11 +229,66 @@ function RegistroProfissional() {
 					attributelist: data,
 					filelist: selectedFiles,
 				})
-				.then((response) => {
-					console.log(response);
+				.then(async (response) => {
+					if (response.data.Status === "FAILURE") {
+						toast.error("Erro ao cadastrar, tente novamente!");
+						setIsSubmit(false);
+					} else if (response.data.Status === "SUCCESS") {
+						if (modalDataList.length > 1) {
+							const returnData = [];
+							for (let i = 0; i < modalDataList.length; i++) {
+								await axios
+									.post<AxiosResponse | any>("/api/sesuite/childentityrecord", {
+										processid: "mpp01-prc-regprofissional",
+										wfid: response.data.RecordID,
+										mainentityid: "registroprof",
+										entityid: "registroprof",
+										childrelationshipid: "relgridtitulo",
+										attributelist: modalDataList[i],
+										filelist: [],
+									})
+									.then(async (response) => {
+										returnData.push(response.data);
+									})
+									.catch((error) => {
+										toast.error("Erro interno, tente novamente em intantes!");
+									});
+							}
+							if (returnData.length === modalDataList.length) {
+								toast.success("Cadastro realizado com sucesso!");
+								setIsSubmit(false);
+								Router.push("/services/register");
+							}
+						} else {
+							await axios
+								.post<AxiosResponse | any>("/api/sesuite/childentityrecord", {
+									processid: "mpp01-prc-regprofissional",
+									wfid: response.data.RecordID,
+									mainentityid: "registroprof",
+									entityid: "registroprof",
+									childrelationshipid: "relgridtitulo",
+									attributelist: modalDataList[0],
+									filelist: [],
+								})
+								.then(async (response) => {
+									console.log(response.data);
+									if (response.data.Status === "SUCCESS") {
+										toast.success("Cadastro realizado com sucesso!");
+										setIsSubmit(false);
+										Router.push("/services/register");
+									} else {
+										toast.error("Erro ao cadastrar, tente novamente!");
+										setIsSubmit(false);
+									}
+								})
+								.catch((error) => {
+									toast.error("Erro interno, tente novamente em intantes!");
+								});
+						}
+					}
 				})
 				.catch((error) => {
-					console.log(error.response);
+					toast.error("Erro interno, tente novamente em intantes!");
 				});
 		} catch (err) {
 			const validationErrors = {};
@@ -322,7 +438,7 @@ function RegistroProfissional() {
 									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
 								/>
 								<Select name="auxufexpedidor" label="UF Expedidor">
-									{selectOptionsUfExpedicao.map((option) => (
+									{selectOptionsUf.map((option) => (
 										<option key={option.value} value={option.value}>
 											{option.label}
 										</option>
@@ -542,7 +658,16 @@ function RegistroProfissional() {
 								isSubmit={isSubmit}
 								setIsSubmit={setIsSubmit}
 							/>
-							<TitleList />
+							<div>
+								<TitleList titleList={modalDataList} />
+								<button
+									type="button"
+									onClick={() => setIsOpenModal(true)}
+									className="px-3 py-2 md:py-3 mt-4 rounded-lg bg-blue-600 text-white"
+								>
+									Adicionar Título
+								</button>
+							</div>
 							<fieldset className="border p-4 rounded w-full mt-4">
 								<legend className="text-sm font-medium leading-6 text-white dark:text-white">
 									Anexar Documentos
@@ -657,10 +782,220 @@ function RegistroProfissional() {
 					</div>
 				</div>
 			</div>
-			<footer className="flex flex-col py-2 justify-center items-center text-white bg-blue-800 mt-auto">
+			{isOpenModal && (
+				<Modal
+					setIsOpenModal={setIsOpenModal}
+					isOpenModal={isOpenModal}
+					title={"Adicione seu Título"}
+				>
+					<Form ref={formRef} className="w-full" onSubmit={modalData}>
+						<fieldset className="border p-4 rounded w-full mt-4">
+							<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+								Dados do Título - Diplomado no Brasil
+							</legend>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+								<Select name="auxuf" label="UF">
+									{selectOptionsUf.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<Select name="auxinstituicao" label="Instituição">
+									{selectOptionsUf.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<Select name="auxcurso" label="Curso">
+									{selectOptionsUf.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<Checkbox value="1" name="cboutros" label="Outros" />
+							</div>
+						</fieldset>
+						<fieldset className="border p-4 rounded w-full mt-4">
+							<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+								Outras - Instituição
+							</legend>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+								<Input
+									name="cnpjinstituicao"
+									label="CNPJ da Instituição"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="nomefantasia"
+									label="Nome Fantasia"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="razaosocial"
+									label="Razão Social"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</div>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+								<Input
+									name="municipiocnpj"
+									label="Municipio"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="estadocnpj"
+									label="Estado"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</div>
+							<Input
+								name="cursooutros"
+								label="Curso"
+								className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+							/>
+						</fieldset>
+						<fieldset className="border p-4 rounded w-full mt-4">
+							<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+								Dados do Título - Diplomado no Exterior
+							</legend>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+								<Select name="auxpais" label="País">
+									{selectOptionsPais.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<Input
+									name="instituicaoext"
+									label="Instituição"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="cursoexterior"
+									label="Curso"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</div>
+						</fieldset>
+						<fieldset className="border p-4 rounded w-full mt-4">
+							<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+								Dados do Título
+							</legend>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+								<Input
+									name="tituloprofissio"
+									label="Título Profissional"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="abreviatura"
+									label="Abreviatura"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+								<Input
+									name="nivelcurso"
+									label="Nível do Curso"
+									className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+								/>
+							</div>
+						</fieldset>
+						<fieldset className="border p-4 rounded w-full mt-4">
+							<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+								Dados do Registro
+							</legend>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+								<section className="flex flex-col justify-center gap-4">
+									<Input
+										name="numerocertifica"
+										label="Número do Registro do Diploma"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Select name="auxtpcertificac" label="Tipo de Certificação">
+										{selectOptionsUf.map((option) => (
+											<option key={option.value} value={option.value}>
+												{option.label}
+											</option>
+										))}
+									</Select>
+								</section>
+								<section>
+									<fieldset className="border p-4 rounded w-full mt-4">
+										<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+											Diplomado
+										</legend>
+										<div className="grid grid-cols-2 items-center gap-2">
+											<Radio
+												name="rbdiplomado"
+												options={rbDiplomadoOptions}
+												onChange={(e) => {
+													setTipeRegister(e.target.value);
+												}}
+												className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+											/>
+										</div>
+									</fieldset>
+									<fieldset className="border p-4 rounded w-full mt-4">
+										<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+											Título Principal
+										</legend>
+										<div className="grid grid-cols-2 items-center gap-2">
+											<Radio
+												name="rbtituloprincip"
+												options={rbTituloPrincipal}
+												onChange={(e) => {
+													setTipeRegister(e.target.value);
+												}}
+												className="text-sm font-medium leading-5 text-white dark:text-white flex items-center gap-2"
+											/>
+										</div>
+									</fieldset>
+								</section>
+							</div>
+							<fieldset className="border p-4 rounded w-full mt-4">
+								<legend className="text-sm font-medium leading-6 text-white dark:text-white">
+									Datas
+								</legend>
+								<div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+									<Input
+										name="dataentrada"
+										type="date"
+										label="Data de Inicio"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="dataformacao"
+										type="date"
+										label="Data da Formação"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="datadiploma"
+										type="date"
+										label="Data do Diploma"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+									<Input
+										name="datacolacaograu"
+										type="date"
+										label="Data da Colação de Grau"
+										className="px-3 py-2 border outline-none rounded-lg w-full border-blue-400"
+									/>
+								</div>
+							</fieldset>
+							<Textarea name="observacao" label="Observação" />
+						</fieldset>
+						<ButtonSubmit title="Enviar" />
+					</Form>
+				</Modal>
+			)}
+			<footer className="flex flex-col text-sm py-2 justify-center items-center text-white bg-blue-800 mt-auto">
 				<p className="text-center">
 					Conselho Regional de Engenharia e Agronomia de Pernambuco - Avenida
-					Agamenón Magalhães 2978, Espinheiro, Recife, PE
+					Agamenon Magalhães 2978, Espinheiro, Recife, PE
 				</p>
 				<p className="text-center">
 					Sistema de Informações Técnicas e Administrativas do CREA-PE

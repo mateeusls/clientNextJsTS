@@ -1,6 +1,14 @@
 import { NewChildEntityRecord } from "@/services/MethodSe/WorkFlow/NewChildentityRecord";
 import { NextApiRequest, NextApiResponse } from "next";
 
+export const config = {
+	api: {
+		bodyParser: {
+			sizeLimit: "8mb",
+		},
+	},
+};
+
 export default async function ChildEntityRecordPage(
 	req: NextApiRequest,
 	res: NextApiResponse

@@ -26,7 +26,7 @@ export const selectOptionsGenero = [
 ];
 
 // Select UF de Expedição
-export const selectOptionsUfExpedicao = [
+export const selectOptionsUf = [
 	{ value: "", label: "Selecione" },
 	{ value: "AC", label: "Acre" },
 	{ value: "AL", label: "Alagoas" },
@@ -65,6 +65,47 @@ export const selectOptionsDoadorOrgaos = [
 	{ value: "Não", label: "Não" },
 ];
 
+// Select Pais
+export const selectOptionsPais = [
+	{ value: "", label: "Selecione" },
+	{ value: "Brasil", label: "Brasil" },
+	{ value: "EUA", label: "EUA" },
+	{ value: "Alemanha", label: "Alemanha" },
+	{ value: "Argentina", label: "Argentina" },
+	{ value: "Austrália", label: "Austrália" },
+	{ value: "Áustria", label: "Áustria" },
+	{ value: "Bélgica", label: "Bélgica" },
+	{ value: "Bolívia", label: "Bolívia" },
+	{ value: "Canadá", label: "Canadá" },
+	{ value: "Chile", label: "Chile" },
+	{ value: "China", label: "China" },
+	{ value: "Colômbia", label: "Colômbia" },
+	{ value: "Coreia do Sul", label: "Coreia do Sul" },
+	{ value: "Costa Rica", label: "Costa Rica" },
+	{ value: "Cuba", label: "Cuba" },
+	{ value: "Dinamarca", label: "Dinamarca" },
+	{ value: "Equador", label: "Equador" },
+	{ value: "Espanha", label: "Espanha" },
+	{ value: "França", label: "França" },
+	{ value: "Holanda", label: "Holanda" },
+	{ value: "Hungria", label: "Hungria" },
+	{ value: "Inglaterra", label: "Inglaterra" },
+	{ value: "Irlanda", label: "Irlanda" },
+	{ value: "Itália", label: "Itália" },
+	{ value: "Japão", label: "Japão" },
+	{ value: "México", label: "México" },
+	{ value: "Noruega", label: "Noruega" },
+	{ value: "Paraguai", label: "Paraguai" },
+	{ value: "Peru", label: "Peru" },
+	{ value: "Portugal", label: "Portugal" },
+	{ value: "República Tcheca", label: "República Tcheca" },
+	{ value: "Rússia", label: "Rússia" },
+	{ value: "Suécia", label: "Suécia" },
+	{ value: "Suíça", label: "Suíça" },
+	{ value: "Uruguai", label: "Uruguai" },
+	{ value: "Venezuela", label: "Venezuela" },
+];
+
 /* Radios */
 export const rbdiplomaciaOptions = [
 	{
@@ -79,4 +120,29 @@ export const rbdiplomaciaOptions = [
 	},
 ];
 
+export const rbDiplomadoOptions = [
+	{
+		id: "rbbrasil",
+		value: "1",
+		label: "Brasil",
+	},
+	{
+		id: "rbexterior",
+		value: "2",
+		label: "Exterior",
+	},
+];
+
+export const rbTituloPrincipal = [
+	{
+		id: "rbsim",
+		value: "1",
+		label: "Sim",
+	},
+	{
+		id: "rbnao",
+		value: "2",
+		label: "Não",
+	},
+];
 /* Checkboxes */

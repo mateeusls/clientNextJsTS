@@ -7,9 +7,10 @@ export default function Document() {
 				<meta charSet="utf-8" />
 				<link rel="manifest" href="/manifest.json" />
 				<meta name="theme-color" content="#044a8c" />
+				<meta name="description" content="" />
 				<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 			</Head>
-			<body>
+			<body className="scrollbar scrollbar-thumb-slate-400 scrollbar-track-gray-100 scrollbar-w-2 scrollbar-track-rounded-lg scrollbar-thumb-rounded-lg">
 				<Main />
 				<NextScript />
 			</body>
