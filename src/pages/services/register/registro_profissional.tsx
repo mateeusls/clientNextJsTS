@@ -8,6 +8,7 @@ import InputMask from "@/components/Form/InputMask";
 import { Radio } from "@/components/Form/Radio";
 import { Select } from "@/components/Form/Select";
 import { Textarea } from "@/components/Form/TextArea";
+import LoadingScreen from "@/components/Loading";
 import Modal from "@/components/Modal";
 import {
 	rbdiplomaciaOptions,
@@ -168,6 +169,7 @@ function RegistroProfissional() {
 	const [selectedFiles, setSelectedFiles] = useState<object[]>([]);
 	const [modalDataList, setModalDataList] = useState<ModalDataProps[]>([]);
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const modalData: SubmitHandler<ModalDataProps> = async (
 		data: ModalDataProps,
@@ -220,7 +222,6 @@ function RegistroProfissional() {
 			delete data.anxtiposangue;
 			delete data.anxnispispasep;
 			delete data.anxassinatura;
-			console.log(modalDataList);
 			await axios
 				.post<AxiosResponse | any>("/api/sesuite/editdata", {
 					processid: "mpp01-prc-regprofissional",
@@ -232,6 +233,7 @@ function RegistroProfissional() {
 				.then(async (response) => {
 					if (response.data.Status === "FAILURE") {
 						toast.error("Erro ao cadastrar, tente novamente!");
+						setIsLoading(false);
 						setIsSubmit(false);
 					} else if (response.data.Status === "SUCCESS") {
 						if (modalDataList.length > 1) {
@@ -258,6 +260,10 @@ function RegistroProfissional() {
 								toast.success("Cadastro realizado com sucesso!");
 								setIsSubmit(false);
 								Router.push("/services/register");
+							} else {
+								toast.error("Erro ao cadastrar, tente novamente!");
+								setIsLoading(false);
+								setIsSubmit(false);
 							}
 						} else {
 							await axios
@@ -271,13 +277,13 @@ function RegistroProfissional() {
 									filelist: [],
 								})
 								.then(async (response) => {
-									console.log(response.data);
 									if (response.data.Status === "SUCCESS") {
 										toast.success("Cadastro realizado com sucesso!");
 										setIsSubmit(false);
 										Router.push("/services/register");
 									} else {
 										toast.error("Erro ao cadastrar, tente novamente!");
+										setIsLoading(false);
 										setIsSubmit(false);
 									}
 								})
@@ -307,6 +313,7 @@ function RegistroProfissional() {
 				<title>Registro Profissional | Registros | CREA</title>
 			</Head>
 			<Sidebar />
+			{isLoading && <LoadingScreen />}
 			<div className="py-4 px-2">
 				<div className="flex flex-col items-center lg:w-[55.5rem] mx-auto rounded-lg">
 					<div className="bg-yellow-600 w-full p-7 md:py-7 rounded-t">
@@ -988,7 +995,7 @@ function RegistroProfissional() {
 							</fieldset>
 							<Textarea name="observacao" label="Observação" />
 						</fieldset>
-						<ButtonSubmit title="Enviar" />
+						<ButtonSubmit title="Enviar" onClick={() => setIsLoading(true)} />
 					</Form>
 				</Modal>
 			)}
