@@ -784,7 +784,10 @@ function RegistroProfissional() {
 									/>
 								</div>
 							</fieldset>
-							<ButtonSubmit title="Cadastrar" />
+							<ButtonSubmit
+								title="Cadastrar"
+								onClick={() => setIsLoading(true)}
+							/>
 						</Form>
 					</div>
 				</div>
@@ -995,7 +998,7 @@ function RegistroProfissional() {
 							</fieldset>
 							<Textarea name="observacao" label="Observação" />
 						</fieldset>
-						<ButtonSubmit title="Enviar" onClick={() => setIsLoading(true)} />
+						<ButtonSubmit title="Enviar" />
 					</Form>
 				</Modal>
 			)}
